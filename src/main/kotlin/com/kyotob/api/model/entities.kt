@@ -22,7 +22,7 @@ data class Pair(
         var user_id_2: Long
 )
 
-data class Messages(
+data class Message(
         var message_id: Long,
         var sender_id:  Long,
         var room_id:    Long,
