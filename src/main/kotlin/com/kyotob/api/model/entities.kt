@@ -9,20 +9,20 @@ data class Room(
     var room_name: String
 )
 
-data class user(
+data class User(
         var user_id:          Long,
         var user_name:        String,
         var user_screen_name: String,
         var password:         String
 )
 
-data class pair(
+data class Pair(
         var room_id:   Long,
         var user_id_1: Long,
         var user_id_2: Long
 )
 
-data class message(
+data class Messages(
         var message_id: Long,
         var sender_id:  Long,
         var room_id:    Long,
