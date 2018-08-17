@@ -26,6 +26,6 @@ data class message(
         var message_id: Long,
         var sender_id:  Long,
         var room_id:    Long,
-        var message:  String,
+        var content:  String,
         @get:JsonProperty("created_at") var created_at: Timestamp
 )
