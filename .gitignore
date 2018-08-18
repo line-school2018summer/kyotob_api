@@ -32,3 +32,5 @@ mysql/*
 !mysql/my.cnf
 !mysql/
 !.gitkeep
+
+/api/src/main/resources/application.yml
