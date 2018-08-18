@@ -5,27 +5,27 @@ import java.sql.Timestamp
 
 
 data class Room(
-    var room_id:   Long,
-    var room_name: String
+    var roomId:   Long,
+    var roomName: String
 )
 
 data class User(
-        var user_id:          Long,
-        var user_name:        String,
-        var user_screen_name: String,
+        var userId:          Long,
+        var userName:        String,
+        var userScreenName: String,
         var password:         String
 )
 
 data class Pair(
-        var room_id:   Long,
-        var user_id_1: Long,
-        var user_id_2: Long
+        var roomId:   Long,
+        var userId1: Long,
+        var userId2: Long
 )
 
 data class Message(
-        var message_id: Long,
-        var sender_id:  Long,
-        var room_id:    Long,
+        var messageId: Long,
+        var senderId:  Long,
+        var roomId:    Long,
         var content:  String,
-        @get:JsonProperty("created_at") var created_at: Timestamp
+        @get:JsonProperty("created_at") var createdAt: Timestamp
 )
