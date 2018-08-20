@@ -32,3 +32,6 @@ mysql/*
 !mysql/my.cnf
 !mysql/
 !.gitkeep
+
+### vim ###
+*~
