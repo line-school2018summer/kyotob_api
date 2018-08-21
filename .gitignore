@@ -26,11 +26,10 @@
 /.nb-gradle/
 
 ### DB ###
-mysql/*
-!mysql/init/init.sql
-!mysql/Dockerfile
-!mysql/my.cnf
-!mysql/
+mysql/
+!init/init.sql
+!Dockerfile
+!my.cnf
 !.gitkeep
 
 ### vim ###
