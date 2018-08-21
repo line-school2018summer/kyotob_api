@@ -1,4 +1,4 @@
-package com.example.apiSample.controller
+package com.kyotob.api.controller
 
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
