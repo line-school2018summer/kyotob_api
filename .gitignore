@@ -27,7 +27,7 @@
 
 ### DB ###
 mysql/*
-!mysql/init/*
+!mysql/init/init.sql
 !mysql/Dockerfile
 !mysql/my.cnf
 !mysql/
