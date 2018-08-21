@@ -3,7 +3,7 @@ USE kyotob;
 -- Table 1: ルーム情報を格納するテーブルを作成
 CREATE TABLE `rooms` (
   `room_id` int NOT NULL AUTO_INCREMENT,
-  `room_name` varchar(20) NOT NULL UNIQUE,
+  `room_name` varchar(20) NOT NULL,
   PRIMARY KEY (`room_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
