@@ -39,3 +39,10 @@ CREATE TABLE `messages` (
   PRIMARY KEY (`message_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+-- Table 6:アクセストークン
+CREATE TABLE `tokens` (
+  `user_id` int NOT NULL,
+  `token` varchar(200) NOT NULL,
+  `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
