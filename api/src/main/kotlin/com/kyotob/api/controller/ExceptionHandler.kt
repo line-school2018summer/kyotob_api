@@ -12,7 +12,7 @@ class BadRequestException(override val message: String) : Exception(message)
 class UnauthorizedException(override val message: String) : Exception(message)
 
 @ControllerAdvice
-class apiExceptionHandler {
+class apiExcetionHandler {
 
     @ExceptionHandler(BadRequestException::class)
     fun badRequest(req: HttpServletRequest, e: BadRequestException): ResponseEntity<ErrorResponse> {

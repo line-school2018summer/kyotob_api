@@ -29,3 +29,9 @@ data class Message(
         var content:  String,
         @get:JsonProperty("created_at") var createdAt: Timestamp
 )
+
+data class Token(
+        var userId: Int,
+        var token: String,
+        @get:JsonProperty("created_at") var createdAt: Timestamp
+)
