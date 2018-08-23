@@ -4,7 +4,7 @@ USE kyotob;
 CREATE TABLE `rooms` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(20) NOT NULL,
-  PRIMARY KEY (`room_id`)
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Table 3: ユーザー情報を格納するテーブルを作成
@@ -13,7 +13,7 @@ CREATE TABLE `users` (
   `name` varchar(20) NOT NULL UNIQUE,
   `screen_name` varchar(20) NOT NULL,
   `password` char(64) NOT NULL,
-  PRIMARY KEY (`user_id`)
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Table 4: 1対1ルームの情報を格納するテーブルを作成
