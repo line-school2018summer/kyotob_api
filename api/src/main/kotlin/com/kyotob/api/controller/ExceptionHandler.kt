@@ -10,6 +10,8 @@ data class ErrorResponse(val error_message: String)
 
 class BadRequestException(override val message: String) : Exception(message)
 class UnauthorizedException(override val message: String) : Exception(message)
+class InternalServerError(override val message: String) : Exception(message)
+class Conflict(override val message: String) : Exception(message)
 
 @ControllerAdvice
 class apiExceptionHandler {
@@ -24,5 +26,17 @@ class apiExceptionHandler {
     fun notAuthorized(req: HttpServletRequest, e: UnauthorizedException): ResponseEntity<ErrorResponse> {
         val errorResponse = ErrorResponse(e.message)
         return ResponseEntity(errorResponse, HttpStatus.UNAUTHORIZED)
+    }
+
+    @ExceptionHandler(InternalServerError::class)
+    fun internalError(req: HttpServletRequest, e: InternalServerError): ResponseEntity<ErrorResponse> {
+        val errorResponse = ErrorResponse(e.message)
+        return ResponseEntity(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR)
+    }
+
+    @ExceptionHandler(Conflict::class)
+    fun conflict(req: HttpServletRequest, e: InternalServerError): ResponseEntity<ErrorResponse> {
+        val errorResponse = ErrorResponse(e.message)
+        return ResponseEntity(errorResponse, HttpStatus.CONFLICT)
     }
 }
