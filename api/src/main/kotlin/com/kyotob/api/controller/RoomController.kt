@@ -10,7 +10,7 @@ import kotlin.math.max
 import kotlin.math.min
 
 data class PostPairRequest (
-        val friendUserName: String
+        val friendUserName: String,
         val roomName: String
 )
 @RestController
