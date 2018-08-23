@@ -3,29 +3,20 @@ package com.kyotob.api.model
 import com.fasterxml.jackson.annotation.JsonProperty
 import java.sql.Timestamp
 
+data class Room(val id: Int,
+                val name: String)
 
-data class Room(
-    var roomId:   Int,
-    var roomName: String
-)
+data class User(val id: Int,
+                val name: String,
+                val screenName: String,
+                val password: String)
 
-data class User(
-        var userId:          Int,
-        var userName:        String,
-        var userScreenName: String,
-        var password:         String
-)
+data class Pair(val roomId: Int,
+                val userId1: Int,
+                val userId2: Int)
 
-data class Pair(
-        var roomId:   Int,
-        var userId1: Int,
-        var userId2: Int
-)
-
-data class Message(
-        var messageId: Int,
-        var senderId:  Int,
-        var roomId:    Int,
-        var content:  String,
-        @get:JsonProperty("created_at") var createdAt: Timestamp
-)
+data class Message(val messageId: Int,
+                   val senderId: Int,
+                   val roomId: Int,
+                   val content: String,
+                   @get:JsonProperty("created_at") val createdAt: Timestamp)
