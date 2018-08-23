@@ -10,7 +10,7 @@ interface RoomMapper {
 
     @Select(
             """
-                SELECT room_id, room_name
+                SELECT id, name
                 FROM rooms
             """
     )
@@ -18,30 +18,30 @@ interface RoomMapper {
 
     @Select(
             """
-                SELECT room_id, room_name
+                SELECT id, name
                 FROM rooms
-                WHERE room_id=#{roomId}
+                WHERE id=#{roomId}
             """
     )
     fun findByRoomId(roomId: Int): Room?
 
     @Select(
             """
-                SELECT room_id, room_name
+                SELECT id, name
                 FROM rooms
-                WHERE room_name=#{roomName}
+                WHERE name=#{roomName}
             """
     )
     fun findByRoomName(roomName: String): Room?
 
     @Insert(
             """
-                INSERT INTO rooms (room_name)
+                INSERT INTO rooms (name)
                 Values (#{roomName})
             """
     )
     @SelectKey(
-            statement = ["SELECT LAST_INSERT_ID()"], keyProperty = "room_id",
+            statement = ["SELECT LAST_INSERT_ID()"], keyProperty = "id",
             before = false, resultType = Int::class
     )
     fun create(roomName: String): Int
@@ -49,8 +49,8 @@ interface RoomMapper {
     @Update(
             """
                 UPDATE rooms
-                SET room_name=#{newName}
-                WHERE room_id=#{roomId}
+                SET name=#{newName}
+                WHERE id=#{roomId}
             """
     )
     fun updateName(roomId: Int, newName: String): Boolean
@@ -58,7 +58,7 @@ interface RoomMapper {
     @Delete(
             """
                 DELETE FROM rooms
-                WHERE room_id=#{roomId}
+                WHERE id=#{roomId}
             """
     )
     fun delete(roomId: Int): Boolean
