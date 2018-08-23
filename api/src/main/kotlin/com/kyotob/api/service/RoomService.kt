@@ -21,6 +21,10 @@ class RoomService(private val roomMapper: RoomMapper, private val pairMapper: Pa
         return room
     }
 
+    fun getPairFromTwoUserId(userId1: Int, userId2: Int): Pair? {
+        return pairMapper.findByTwoUserId(userId1, userId2)
+    }
+
     fun getRoomListFromUserId(userId: Int): List<Room> {
         val pairs = pairMapper.findByUserId(userId)
         //pairsテーブルとroomsテーブルは整合性がなければならない
@@ -29,9 +33,10 @@ class RoomService(private val roomMapper: RoomMapper, private val pairMapper: Pa
                             throw InternalServerError("pairsとroomsとに整合性がない")}
     }
 
-    fun createPairRoom(userId1: Int, userId2: Int, roomName: String): Unit {
+    fun createPairRoom(userId1: Int, userId2: Int, roomName: String): Int {
         val roomId: Int = roomMapper.create(roomName)
         pairMapper.create(roomId, userId1, userId2)
+        return roomId
     }
 
     fun deleteRoom(roomId: Int): Unit {

@@ -34,6 +34,15 @@ interface PairMapper {
     )
     fun findByUserId(userId: Int): ArrayList<Pair>
 
+    @Select(
+            """
+                SELECT room_id, user_id_1, user_id_2
+                FROM pairs
+                WHERE user_id_1=#{userId1} AND user_id_2=#{userId2}
+            """
+    )
+    fun findByTwoUserId(userId1: Int, userId2: Int): Pair?
+
     @Insert(
             """
                 INSERT INTO pairs
