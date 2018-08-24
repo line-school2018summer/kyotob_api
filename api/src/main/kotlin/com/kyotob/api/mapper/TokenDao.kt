@@ -6,23 +6,14 @@ import org.springframework.stereotype.Component
 
 @Component
 @Mapper
-interface TokenMapper {
-    @Select(
-            """
-                SELECT user_id, token, created
-                FROM  tokens
-            """
-    )
-    fun getTokenList(): ArrayList<Token>
-
+interface TokenDao {
     @Select(
             """
                 SELECT user_id, token, created
                 FROM tokens
-                WHERE user_id=#{userId}
             """
     )
-    fun findByUserId(userId: Int): Token?
+    fun getTokenList(): ArrayList<Token>
 
     @Select(
             """
