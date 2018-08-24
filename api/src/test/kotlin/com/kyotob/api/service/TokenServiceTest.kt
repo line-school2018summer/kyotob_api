@@ -1,6 +1,5 @@
 package com.kyotob.api.service
 
-import com.kyotob.api.TestDataResources
 import com.kyotob.api.controller.UnauthorizedException
 import org.junit.Before
 import org.junit.jupiter.api.Assertions
@@ -14,16 +13,9 @@ import org.springframework.boot.test.context.SpringBootTest
 @SpringBootTest
 @ExtendWith(SpringExtension::class)
 class TestTokenService {
-    @Autowired
-    lateinit var testDataResources: TestDataResources
 
     @Autowired
     lateinit var tokenService: TokenService
-
-    @Before
-    fun setup(){
-        testDataResources.beforeTestExecution()
-    }
 
     @Test
     fun testTokenService() {

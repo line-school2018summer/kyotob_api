@@ -37,14 +37,14 @@ interface RoomMapper {
     @Insert(
             """
                 INSERT INTO rooms (name)
-                Values (#{roomName})
+                Values (#{name})
             """
     )
     @SelectKey(
-            statement = ["SELECT LAST_INSERT_ID()"], keyProperty = "id",
+            statement = ["SELECT @@IDENTITY"], keyProperty = "id",
             before = false, resultType = Int::class
     )
-    fun create(roomName: String): Int
+    fun create(insertRoom: Room): Unit
 
     @Update(
             """

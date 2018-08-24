@@ -10,9 +10,9 @@ import kotlin.math.max
 import kotlin.math.min
 
 data class PostPairRequest (
-        val friendUserName: String,
-        val roomName: String
+        val friendUserName: String
 )
+
 @RestController
 class RoomController(private val roomService: RoomService, private val tokenService: TokenService) {
 
@@ -45,13 +45,15 @@ class RoomController(private val roomService: RoomService, private val tokenServ
                      @RequestBody request: PostPairRequest): Room {
         val uId = tokenService.verifyAccessToken(token)
         //Todo:friendNameから友達のIDを取得
-        // とりあえず100
-        val friendId = 100
-        val roomName = request.roomName
+        // とりあえず2
+        val friendId = 2
+        val roomName = "room"
         if (uId == friendId) throw BadRequestException("自分とルームを作ろうとしている")
         val minId = min(uId,friendId)
         val maxId = max(uId,friendId)
         val pair = roomService.getPairFromTwoUserId(minId, maxId)
+
+        //ルームが存在するかどうかで挙動が変わる
         if (pair == null) {
             val roomId = roomService.createPairRoom(minId, maxId, roomName)
             return roomService.getRoomFromRoomId(roomId)

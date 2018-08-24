@@ -2,3 +2,4 @@ users
 rooms
 pairs
 messages
+tokens
