@@ -10,7 +10,7 @@ interface TokenDao {
     @Select(
             """
                 SELECT user_id, token, created
-                FROM  tokens
+                FROM tokens
             """
     )
     fun getTokenList(): ArrayList<Token>
