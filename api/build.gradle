@@ -50,7 +50,7 @@ dependencies {
 	runtime('mysql:mysql-connector-java')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 	testCompile('org.junit.jupiter:junit-jupiter-api')
-    testCompile('org.dbunit:dbunit:2.4.3')
+    	testCompile('org.dbunit:dbunit:2.4.3')
 }
 
 jar {
