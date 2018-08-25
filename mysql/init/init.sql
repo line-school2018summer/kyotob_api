@@ -36,9 +36,9 @@ CREATE TABLE `messages` (
 
 -- Table 6:アクセストークン
 CREATE TABLE `tokens` (
-  `id` int NOT NULL AUTO_INCREMENT,
   `user_id` int NOT NULL,
   `token` varchar(200) NOT NULL,
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE INDEX IDX_TOKEN ON tokens(token);
