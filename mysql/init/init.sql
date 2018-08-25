@@ -39,6 +39,5 @@ CREATE TABLE `tokens` (
   `user_id` int NOT NULL,
   `token` varchar(200) NOT NULL,
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  INDEX(token)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-CREATE INDEX IDX_TOKEN ON tokens(token);
