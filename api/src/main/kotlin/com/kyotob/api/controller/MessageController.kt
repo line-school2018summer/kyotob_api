@@ -11,7 +11,7 @@ class MessageController(private val messageservice: MessageService) {
             value = ["/message/{room_id}"],
             produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
     )
-    fun getMessage(@PathVariable("room_id") room_id: Int, @RequestHeader("Token") token: String): List<GetMessageResponse> {
+    fun getMessage(@PathVariable("room_id") room_id: Int, @RequestHeader("Token") token: String): List<GetMessageResponse>? {
         // Tokenの持ち主がPair(ルーム)に存在するか確認する
         if (messageservice.auth(room_id, token) == false) {
             // ルーム存在しない場合はErrorを投げる

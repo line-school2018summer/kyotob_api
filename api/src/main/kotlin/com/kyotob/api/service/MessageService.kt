@@ -1,7 +1,9 @@
 package com.kyotob.api.service
 import com.kyotob.api.mapper.MessageDAO // Message関連のMapper
+import com.kyotob.api.model.GetMessageAuth
 import com.kyotob.api.model.GetMessageResponse // Message受信時のレスポンス用モデル
 import com.kyotob.api.model.SendMessage // Message送信時のリクエスト用モデル
+import com.kyotob.api.model.UserId
 import org.springframework.stereotype.Service
 @Service
 class MessageService(private val mdao: MessageDAO) {
@@ -13,14 +15,14 @@ class MessageService(private val mdao: MessageDAO) {
         return true
     }
     // メッセージ取得時に呼ぶメソッド
-    fun getmessagelist(room_id: Int): List<GetMessageResponse> {
+    fun getmessagelist(room_id: Int): List<GetMessageResponse>? {
         // メッセージ取得
         return mdao.findMessages(room_id)
     }
     // メッセージ送信時に呼ぶメソッド
     fun sendmessage(request: SendMessage): Boolean {
         // users.user_nameからusers.user_idを割り出す
-        val user_id = mdao.getuserid(request.user_name)
+        val user_id: UserId? = mdao.getuserid(request.user_name)
         if (user_id == null) {
             // 該当しない場合はfalseを返す
             return false
