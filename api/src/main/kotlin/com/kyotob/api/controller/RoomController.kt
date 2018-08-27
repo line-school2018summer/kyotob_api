@@ -4,12 +4,14 @@ import com.kyotob.api.service.RoomService
 import com.kyotob.api.service.TokenService
 import com.kyotob.api.model.Room
 import com.kyotob.api.model.Token
+import com.fasterxml.jackson.annotation.*
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
 import kotlin.math.max
 import kotlin.math.min
 
 data class PostPairRequest (
+        @JsonProperty("friend_user_name")
         val friendUserName: String
 )
 
