@@ -8,6 +8,9 @@ import com.kyotob.api.model.UserLogin //User認証用のモデル
 import com.kyotob.api.mapper.UserDAO //User関連のMapper
 
 import org.springframework.stereotype.Service
+
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder //passwordのハッシュ化
+
 import java.sql.Connection
 import java.sql.DriverManager
 
@@ -21,7 +24,11 @@ class UserService(private val userDao: UserDAO){
         }
         //Userが未登録ならばDatabaseに追加
         else{
-            userDao.insertUser(request.name, request.screenName, request.password)
+            //passwordのハッシュ化
+            val hashedPassword = BCryptPasswordEncoder().encode(request.password)
+
+            //Databaseに追加
+            userDao.insertUser(request.name, request.screenName, hashedPassword)
             return true
         }
     }
@@ -32,7 +39,8 @@ class UserService(private val userDao: UserDAO){
             val givenPassword: String = request.password
             val storedPassword: String = userDao.getPassword(request.name)
 
-            return givenPassword == storedPassword
+            //passwordのハッシュ値が一致するか確認
+            return BCryptPasswordEncoder().matches(givenPassword, storedPassword)
         }
         else{
             return false
