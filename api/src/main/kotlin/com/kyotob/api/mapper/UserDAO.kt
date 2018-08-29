@@ -21,7 +21,7 @@ interface UserDAO {
                 FROM users
                 WHERE name=#{user_name}
             """
-    )fun getPassword(user_name: String)
+    )fun getPassword(user_name: String): String
 
     //Userが存在するかどうか判定
     @Select(

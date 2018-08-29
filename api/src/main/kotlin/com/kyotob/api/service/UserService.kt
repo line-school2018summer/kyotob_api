@@ -1,5 +1,7 @@
 package com.kyotob.api.service
 
+import com.kyotob.api.controller.BadRequestException
+import com.kyotob.api.controller.UnauthorizedException
 import com.kyotob.api.model.UserRegister //User登録用のモデル
 import com.kyotob.api.model.UserLogin //User認証用のモデル
 
@@ -25,10 +27,15 @@ class UserService(private val userDao: UserDAO){
     }
 
     //Userログインをするメソッド
-    fun login(request: UserLogin): Boolean{
-        val givenPassword: String = request.password
-        val storedPassword: String = userDao.getPassword(request.name).toString()
+    fun login(request: UserLogin): Boolean {
+        if (userDao.isUserRegistered(request.name)) {
+            val givenPassword: String = request.password
+            val storedPassword: String = userDao.getPassword(request.name)
 
-        return givenPassword==storedPassword
+            return givenPassword == storedPassword
+        }
+        else{
+            return false
+        }
     }
 }
