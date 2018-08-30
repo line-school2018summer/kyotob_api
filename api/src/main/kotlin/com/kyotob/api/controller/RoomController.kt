@@ -16,12 +16,12 @@ data class PostPairRequest (
 )
 
 @RestController
+@RequestMapping(produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)])
 class RoomController(private val roomService: RoomService, private val tokenService: TokenService) {
 
     //部屋一覧(デバッグ用)
     @GetMapping(
-            value = ["/room/all"],
-            produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
+            value = ["/room/all"]
     )
     fun getAllRoom(): ArrayList<Room> {
         return roomService.getAllRoomList()
@@ -29,8 +29,7 @@ class RoomController(private val roomService: RoomService, private val tokenServ
 
     //所属ルーム一覧
     @GetMapping(
-            value = ["/room"],
-            produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
+            value = ["/room"]
     )
     fun getAffiliatedRoom(@RequestParam("access_token") token: String): List<Room> {
         val uId = tokenService.verifyAccessToken(token)
@@ -40,19 +39,18 @@ class RoomController(private val roomService: RoomService, private val tokenServ
 
     //一対一ルーム取得
     @PostMapping(
-            value = ["/room/pair"],
-            produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
+            value = ["/room/pair"]
     )
     fun getPairRoom(@RequestParam("access_token") token: String,
                      @RequestBody request: PostPairRequest): Room {
-        val uId = tokenService.verifyAccessToken(token)
+        val userId = tokenService.verifyAccessToken(token)
         //Todo:friendNameから友達のIDを取得
         // とりあえず2
         val friendId = 2
         val roomName = "room"
-        if (uId == friendId) throw BadRequestException("自分とルームを作ろうとしている")
-        val minId = min(uId,friendId)
-        val maxId = max(uId,friendId)
+        if (userId == friendId) throw BadRequestException("自分とルームを作ろうとしている")
+        val minId = min(userId, friendId)
+        val maxId = max(userId, friendId)
         val pair = roomService.getPairFromTwoUserId(minId, maxId)
 
         //ルームが存在するかどうかで挙動が変わる
