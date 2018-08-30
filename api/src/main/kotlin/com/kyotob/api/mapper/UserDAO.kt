@@ -10,18 +10,37 @@ interface UserDAO {
             """
                 INSERT INTO users
                 (name, screen_name, password)
-                VALUES (#{name},#{screen_name}, #{password});
+                VALUES (#{name},#{screenName}, #{password});
             """
-    )fun insertUser(name: String, screen_name: String, password: String)
+    )fun insertUser(name: String, screenName: String, password: String)
 
-    //user_nameからuser_passwordを割り出す
+    //nameからpasswordを割り出す
     @Select(
             """
                 SELECT password
                 FROM users
-                WHERE name=#{user_name}
+                WHERE name=#{name}
             """
-    )fun getPassword(user_name: String): String
+    )fun getPassword(name: String): String
+
+    //idからpasswordを割り出す
+    @Select(
+            """
+                SELECT password
+                FROM users
+                WHERE id=#{userId}
+            """
+    )fun idToPassword(userId:Int): String
+
+    //nameからidを割り出す
+    @Select(
+            """
+                SELECT id
+                FROM users
+                WHERE name=#{name}
+            """
+    )fun getId(name: String): Int
+
 
     //Userが存在するかどうか判定
     @Select(

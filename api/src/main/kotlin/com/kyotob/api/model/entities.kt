@@ -3,6 +3,12 @@ package com.kyotob.api.model
 import com.fasterxml.jackson.annotation.JsonProperty
 import java.sql.Timestamp
 
+//Debug用のクラス
+data class Debug(
+        val id: Int,
+        val password: String
+)
+
 //User登録用のクラス
 data class UserRegister(
         val name: String,

@@ -17,7 +17,7 @@ import java.sql.Connection
 import java.sql.DriverManager
 
 @Service
-class UserService(private val userDao: UserDAO){
+class UserService(private val userDao: UserDAO, private val tokenService: TokenService){
     //User登録をするメソッド
     fun createUser(request: UserRegister): Boolean{
         //Userが既に登録されていればErrorを返す。
@@ -25,15 +25,25 @@ class UserService(private val userDao: UserDAO){
             throw Conflict("User name already exists")
             //return false
         }
-        //Userが未登録ならばDatabaseに追加
+        //Userが未登録ならば新しく登録
         else{
             //passwordのハッシュ化
             val hashedPassword = BCryptPasswordEncoder().encode(request.password)
 
-            //Databaseに追加
+            //usersに追加
             userDao.insertUser(request.name, request.screenName, hashedPassword)
+
+            //tokensにuser_idとtokenをペアで追加
+            tokenService.createAccessToken(userDao.getId(request.name))
+
             return true
         }
+    }
+
+    //userIdとpasswordが一致しているか判定するメソッド
+    fun isConsistent(userId: Int, password: String): Boolean {
+        val storedPassword:String = userDao.idToPassword(userId)
+        return BCryptPasswordEncoder().matches(password, storedPassword)
     }
 
     //Userログインをするメソッド
