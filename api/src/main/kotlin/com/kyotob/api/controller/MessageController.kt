@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.*
 @RestController
 class MessageController(private val messageServie: MessageService) {
     // Messageの取得
-    @PostMapping(
-            value = ["/rooms/{roomId}/messages"],
+    @GetMapping(
+            value = ["/room/{room_id}/messages"],
             produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
     )
     fun getMessage(@PathVariable("room_id") roomId: Int, @RequestHeader("Token") token: String): List<GetMessageResponse>? {
@@ -22,7 +22,7 @@ class MessageController(private val messageServie: MessageService) {
     }
     // Messageの送信
     @PostMapping(
-            value = ["/message"],
+            value = ["/room/{room_id}/messages"],
             produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
     )
     fun sendMessage(@RequestBody request: SendMessageRequest, @RequestHeader("Token") token: String):Boolean {
