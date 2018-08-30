@@ -1,7 +1,9 @@
 package com.kyotob.api.service
 
 import com.kyotob.api.controller.BadRequestException
+import com.kyotob.api.controller.Conflict
 import com.kyotob.api.controller.UnauthorizedException
+import com.kyotob.api.controller.InternalServerError
 import com.kyotob.api.model.UserRegister //User登録用のモデル
 import com.kyotob.api.model.UserLogin //User認証用のモデル
 
@@ -20,7 +22,8 @@ class UserService(private val userDao: UserDAO){
     fun createUser(request: UserRegister): Boolean{
         //Userが既に登録されていればErrorを返す。
         if(userDao.isUserRegistered(request.name)) {
-            return false
+            throw Conflict("User name already exists")
+            //return false
         }
         //Userが未登録ならばDatabaseに追加
         else{
@@ -35,15 +38,22 @@ class UserService(private val userDao: UserDAO){
 
     //Userログインをするメソッド
     fun login(request: UserLogin): Boolean {
-        if (userDao.isUserRegistered(request.name)) {
+        if (!userDao.isUserRegistered(request.name)) {
+            //Userが登録されていない場合
+            throw UnauthorizedException("User name does not exist")
+        }
+        else{
             val givenPassword: String = request.password
             val storedPassword: String = userDao.getPassword(request.name)
 
             //passwordのハッシュ値が一致するか確認
-            return BCryptPasswordEncoder().matches(givenPassword, storedPassword)
-        }
-        else{
-            return false
+            if(!BCryptPasswordEncoder().matches(givenPassword, storedPassword)){
+                //Passwordが間違っている場合
+                throw UnauthorizedException("Password is wrong")
+            }
+            else{
+                return true
+            }
         }
     }
 }
