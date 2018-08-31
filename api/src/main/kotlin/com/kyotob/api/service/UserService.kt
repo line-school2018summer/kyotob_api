@@ -2,21 +2,22 @@ package com.kyotob.api.service
 
 import com.kyotob.api.controller.Conflict
 import com.kyotob.api.controller.UnauthorizedException
+import com.kyotob.api.mapper.TokenDao
 import com.kyotob.api.mapper.UserDao
 import com.kyotob.api.model.UserLogin
 import com.kyotob.api.model.UserRegister
 import com.kyotob.api.model.UserResponse
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
+import java.util.*
 
 @Service
-class UserService(private val userDao: UserDao, private val tokenService: TokenService){
+class UserService(private val userDao: UserDao, private val tokenDao: TokenDao){
     //User登録をするメソッド
     fun createUser(request: UserRegister): UserResponse{
         //Userが既に登録されていればErrorを返す。
         if(userDao.isNameRegistered(request.name)) {
             throw Conflict("User name already exists")
-            //return false
         }
         //Userが未登録ならば新しく登録
         else{
@@ -26,17 +27,15 @@ class UserService(private val userDao: UserDao, private val tokenService: TokenS
             //usersに追加
             userDao.insertUser(request.name, request.screenName, hashedPassword)
 
-            //tokenを取得
-            //val token: String = tokenService.getAccessToken(userDao.getId(request.name), request.password)
-
-            val token: String = "token"
+            //tokenを取得しtokensに(id, token)の組を格納
+            val token:String = createNewToken(userDao.nameToId(request.name))
 
             return UserResponse(token)
         }
     }
 
     //Userログインをするメソッド
-    fun login(request: UserLogin): Boolean {
+    fun login(request: UserLogin): UserResponse{
         if (!userDao.isNameRegistered(request.name)) {
             //Userが登録されていない場合
             throw UnauthorizedException("User name does not exist")
@@ -44,7 +43,7 @@ class UserService(private val userDao: UserDao, private val tokenService: TokenS
         else{
             //Userが登録されている場合、passwordの正誤を確認
             val givenPassword: String = request.password
-            val storedPassword: String = userDao.getPassword(request.name)
+            val storedPassword: String = userDao.nameToPassword(request.name)
 
             //passwordのハッシュ値が一致するか確認
             if(!BCryptPasswordEncoder().matches(givenPassword, storedPassword)){
@@ -52,8 +51,18 @@ class UserService(private val userDao: UserDao, private val tokenService: TokenS
                 throw UnauthorizedException("Password is wrong")
             }
             else{
-                return true
+                //passwordがが合っている場合は新規発行のtokenを返す
+                val token:String = createNewToken(userDao.nameToId(request.name))
+                return UserResponse(token)
             }
         }
+    }
+
+    //tokenを新規発行or更新するメソッド
+    fun createNewToken(userId: Int):String{
+        tokenDao.delete(userId)  //古いtokenを削除
+        val token: String = UUID.randomUUID().toString()  //新たにtokenを得る
+        tokenDao.create(userId, token)  //tokensに格納
+        return token
     }
 }

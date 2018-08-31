@@ -3,7 +3,6 @@ package com.kyotob.api.controller
 import com.kyotob.api.model.UserRegister //User登録用のモデル
 import com.kyotob.api.model.UserLogin //User認証用のモデル
 import com.kyotob.api.model.UserResponse //Userレスポンス用のモデル
-import com.kyotob.api.model.Debug // Debug用のモデル
 
 import com.kyotob.api.service.UserService // User関連のサービス
 
@@ -27,17 +26,8 @@ class UserController(private val userService: UserService){
             value = ["user/login"],
             produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
     )
-    fun loginuser(@RequestBody request: UserLogin): Boolean{
+    fun loginuser(@RequestBody request: UserLogin): UserResponse{
         return userService.login(request)
-    }
-
-    //debug用
-    @PostMapping(
-            value = ["user/debug"],
-            produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
-    )
-    fun debug(@RequestBody request: Debug): Boolean{
-        return userService.isConsistent(request.id, request.password)
     }
 
 }

@@ -14,33 +14,21 @@ interface UserDao {
             """
     )fun insertUser(name: String, screenName: String, password: String)
 
-    //nameでuserが存在を判定
+    //nameでuserの存在を判定
     @Select(
             """
                 SELECT EXISTS(SELECT 1 FROM users WHERE name=#{name})
             """
     )fun isNameRegistered(name: String): Boolean
 
-    //idでuserの存在を判定
+    //nameからidを取得
     @Select(
             """
-                SELECT EXISTS(SELECT 1 FROM users WHERE id=#{id)
+                SELECT id
+                FROM users
+                WHERE name=#{name}
             """
-    )fun isIdRegistered(id: Int): Boolean
-
-    //nameとpasswordの組の正誤を判定
-    @Select(
-            """
-                SELECT EXISTS(SELECT 1 FROM users WHERE name=#{name} AND password=#{password})
-            """
-    )fun isNamePasswordConsistent(name: String, password: String): Boolean
-
-    //idとpasswordの組の正誤を判定
-    @Select(
-            """
-                SELECT EXISTS(SELECT 1 FROM users WHERE id=#{id} AND password=#{password})
-            """
-    )fun isIdPasswordConsistent(id: Int, password: String): Boolean
+    )fun nameToId(name: String): Int
 
     //nameからpasswordを割り出す
     @Select(
@@ -49,7 +37,7 @@ interface UserDao {
                 FROM users
                 WHERE name=#{name}
             """
-    )fun getPassword(name: String): String
+    )fun nameToPassword(name: String): String
 
     //idからpasswordを割り出す
     @Select(
