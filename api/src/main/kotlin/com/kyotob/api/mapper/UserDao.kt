@@ -1,6 +1,7 @@
 package com.kyotob.api.mapper
 
 import org.apache.ibatis.annotations.*
+import com.kyotob.api.model.User
 
 @Mapper
 interface UserDao {
@@ -21,23 +22,14 @@ interface UserDao {
             """
     )fun isNameRegistered(name: String): Boolean
 
-    //nameからidを取得
+    //nameからuserの情報を取得
     @Select(
             """
-                SELECT id
+                SELECT id, name, screen_name, password
                 FROM users
                 WHERE name=#{name}
             """
-    )fun nameToId(name: String): Int
-
-    //nameからpasswordを割り出す
-    @Select(
-            """
-                SELECT password
-                FROM users
-                WHERE name=#{name}
-            """
-    )fun nameToPassword(name: String): String
+    )fun getUser(name: String): User
 
     //idからpasswordを割り出す
     @Select(

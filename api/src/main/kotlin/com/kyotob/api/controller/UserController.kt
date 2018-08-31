@@ -3,6 +3,7 @@ package com.kyotob.api.controller
 import com.kyotob.api.model.UserRegister //User登録用のモデル
 import com.kyotob.api.model.UserLogin //User認証用のモデル
 import com.kyotob.api.model.UserResponse //Userレスポンス用のモデル
+import com.kyotob.api.model.UserSearch //User検索ようのモデル
 
 import com.kyotob.api.service.UserService // User関連のサービス
 
@@ -32,11 +33,11 @@ class UserController(private val userService: UserService){
 
     //User検索
     @GetMapping(
-            value = ["user/search/user_name"],
+            value = ["user/search/{user_name}"],
             produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
     )
-    fun searchUser(@PathVariable("user_name") userName: String): Boolean{
-        return true
+    fun searchuser(@PathVariable("user_name") userName: String, @RequestHeader("Token") token:String): UserSearch{
+        return userService.searchUser(userName, token)
     }
 
 

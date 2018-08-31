@@ -21,6 +21,12 @@ data class UserResponse(
         val token: String
 )
 
+//User検索のクラス
+data class UserSearch(
+        val name: String,
+        val screenName: String
+)
+
 data class Room(
         val id: Int,
         val name: String

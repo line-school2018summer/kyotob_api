@@ -12,6 +12,7 @@ class BadRequestException(override val message: String) : Exception(message)
 class UnauthorizedException(override val message: String) : Exception(message)
 class InternalServerError(override val message: String) : Exception(message)
 class Conflict(override val message: String) : Exception(message)
+class NotFound(override val message: String) : Exception(message)
 
 @ControllerAdvice
 class apiExceptionHandler {
@@ -38,5 +39,11 @@ class apiExceptionHandler {
     fun conflict(req: HttpServletRequest, e: InternalServerError): ResponseEntity<ErrorResponse> {
         val errorResponse = ErrorResponse(e.message)
         return ResponseEntity(errorResponse, HttpStatus.CONFLICT)
+    }
+
+    @ExceptionHandler(NotFound::class)
+    fun notFound(req: HttpServletRequest, e: InternalServerError): ResponseEntity<ErrorResponse> {
+        val errorResponse = ErrorResponse(e.message)
+        return ResponseEntity(errorResponse, HttpStatus.NOT_FOUND)
     }
 }
