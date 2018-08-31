@@ -1,27 +1,20 @@
 package com.kyotob.api.service
 
-import com.kyotob.api.controller.BadRequestException
 import com.kyotob.api.controller.Conflict
 import com.kyotob.api.controller.UnauthorizedException
-import com.kyotob.api.controller.InternalServerError
-import com.kyotob.api.model.UserRegister //User登録用のモデル
-import com.kyotob.api.model.UserLogin //User認証用のモデル
-
-import com.kyotob.api.mapper.UserDAO //User関連のMapper
-
+import com.kyotob.api.mapper.UserDao
+import com.kyotob.api.model.UserLogin
+import com.kyotob.api.model.UserRegister
+import com.kyotob.api.model.UserResponse
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder //passwordのハッシュ化
-
-import java.sql.Connection
-import java.sql.DriverManager
-
 @Service
-class UserService(private val userDao: UserDAO, private val tokenService: TokenService){
+class UserService(private val userDao: UserDao, private val tokenService: TokenService){
     //User登録をするメソッド
-    fun createUser(request: UserRegister): Boolean{
+    fun createUser(request: UserRegister): UserResponse{
         //Userが既に登録されていればErrorを返す。
-        if(userDao.isUserRegistered(request.name)) {
+        if(userDao.isNameRegistered(request.name)) {
             throw Conflict("User name already exists")
             //return false
         }
@@ -33,26 +26,23 @@ class UserService(private val userDao: UserDAO, private val tokenService: TokenS
             //usersに追加
             userDao.insertUser(request.name, request.screenName, hashedPassword)
 
-            //tokensにuser_idとtokenをペアで追加
-            tokenService.createAccessToken(userDao.getId(request.name))
+            //tokenを取得
+            //val token: String = tokenService.getAccessToken(userDao.getId(request.name), request.password)
 
-            return true
+            val token: String = "token"
+
+            return UserResponse(token)
         }
-    }
-
-    //userIdとpasswordが一致しているか判定するメソッド
-    fun isConsistent(userId: Int, password: String): Boolean {
-        val storedPassword:String = userDao.idToPassword(userId)
-        return BCryptPasswordEncoder().matches(password, storedPassword)
     }
 
     //Userログインをするメソッド
     fun login(request: UserLogin): Boolean {
-        if (!userDao.isUserRegistered(request.name)) {
+        if (!userDao.isNameRegistered(request.name)) {
             //Userが登録されていない場合
             throw UnauthorizedException("User name does not exist")
         }
         else{
+            //Userが登録されている場合、passwordの正誤を確認
             val givenPassword: String = request.password
             val storedPassword: String = userDao.getPassword(request.name)
 

@@ -2,6 +2,7 @@ package com.kyotob.api.controller
 
 import com.kyotob.api.model.UserRegister //User登録用のモデル
 import com.kyotob.api.model.UserLogin //User認証用のモデル
+import com.kyotob.api.model.UserResponse //Userレスポンス用のモデル
 import com.kyotob.api.model.Debug // Debug用のモデル
 
 import com.kyotob.api.service.UserService // User関連のサービス
@@ -17,7 +18,7 @@ class UserController(private val userService: UserService){
             value = ["/user"],
             produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
     )
-    fun createuser(@RequestBody request: UserRegister):Boolean {
+    fun createuser(@RequestBody request: UserRegister): UserResponse {
         return userService.createUser(request)
     }
 

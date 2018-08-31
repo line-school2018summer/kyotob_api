@@ -22,6 +22,11 @@ data class UserLogin(
         val password: String
 )
 
+//ResponseでTokenを返すためのクラス
+data class UserResponse(
+        val token: String
+)
+
 data class Room(
         val id: Int,
         val name: String

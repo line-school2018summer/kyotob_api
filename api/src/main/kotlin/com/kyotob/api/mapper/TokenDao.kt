@@ -18,7 +18,7 @@ interface TokenDao {
     @Select(
             """
                 SELECT user_id, token, created
-                From tokens
+                FROM tokens
                 WHERE token=#{token}
             """
     )
