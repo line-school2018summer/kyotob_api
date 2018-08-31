@@ -45,3 +45,10 @@ data class Token(
         @get:JsonProperty("created_at") var createdAt: Timestamp
 )
 
+data class Message(
+        val messageId: Int,
+        val senderId: Int,
+        val roomId: Int,
+        val content: String,
+        @get:JsonProperty("created_at") val createdAt: Timestamp
+)

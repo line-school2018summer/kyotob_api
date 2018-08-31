@@ -30,4 +30,14 @@ class UserController(private val userService: UserService){
         return userService.login(request)
     }
 
+    //User検索
+    @GetMapping(
+            value = ["user/search/user_name"],
+            produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
+    )
+    fun searchUser(@PathVariable("user_name") userName: String): Boolean{
+        return true
+    }
+
+
 }
