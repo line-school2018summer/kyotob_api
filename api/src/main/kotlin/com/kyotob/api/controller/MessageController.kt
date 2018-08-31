@@ -5,7 +5,7 @@ import com.kyotob.api.service.MessageService // Message関連のサービス
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
 @RestController
-class MessageController(private val messageServie: MessageService) {
+class MessageController(private val messageService: MessageService) {
     // Messageの取得
     @GetMapping(
             value = ["/room/{room_id}/messages"],
@@ -13,12 +13,12 @@ class MessageController(private val messageServie: MessageService) {
     )
     fun getMessage(@PathVariable("room_id") roomId: Int, @RequestHeader("token") token: String): List<GetMessageResponse>? {
         // Tokenの持ち主がPair(ルーム)に存在するか確認する
-        if (messageServie.auth(roomId, token) == false) {
+        if (messageService.auth(roomId, token) == false) {
             // ルーム存在しない場合はErrorを投げる
             throw UnauthorizedException("TokenError")
         }
         // Tokenの認証ができたので、メッセージを取得してResponseとして返す
-        return messageServie.getMessageList(roomId)
+        return messageService.getMessageList(roomId)
     }
     // Messageの送信
     @PostMapping(
@@ -33,11 +33,11 @@ class MessageController(private val messageServie: MessageService) {
         if(request.content.length > 100) throw BadRequestException("over 100 content")
 
         // Tokenの持ち主がPair(ルーム)に存在するか確認する
-        if (messageServie.auth(request.roomId, token) == false) {
+        if (messageService.auth(request.roomId, token) == false) {
             // ルーム存在しない場合はErrorを投げる
             throw UnauthorizedException("TokenError")
         }
         // メッセージ送信
-        return messageServie.sendMessage(request)
+        return messageService.sendMessage(request)
     }
 }
