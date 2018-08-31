@@ -11,7 +11,7 @@ class MessageController(private val messageServie: MessageService) {
             value = ["/room/{room_id}/messages"],
             produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
     )
-    fun getMessage(@PathVariable("room_id") roomId: Int, @RequestHeader("Token") token: String): List<GetMessageResponse>? {
+    fun getMessage(@PathVariable("room_id") roomId: Int, @RequestHeader("token") token: String): List<GetMessageResponse>? {
         // Tokenの持ち主がPair(ルーム)に存在するか確認する
         if (messageServie.auth(roomId, token) == false) {
             // ルーム存在しない場合はErrorを投げる
@@ -25,7 +25,7 @@ class MessageController(private val messageServie: MessageService) {
             value = ["/room/{room_id}/messages"],
             produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
     )
-    fun sendMessage(@RequestBody request: SendMessageRequest, @RequestHeader("Token") token: String):Boolean {
+    fun sendMessage(@RequestBody request: SendMessageRequest, @RequestHeader("token") token: String):Boolean {
         // バリデーション
         // 空文字を入力した場合
         if(request.content.length == 0) throw BadRequestException("no content")
