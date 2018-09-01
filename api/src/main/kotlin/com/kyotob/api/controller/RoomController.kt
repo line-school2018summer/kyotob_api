@@ -31,7 +31,7 @@ class RoomController(private val roomService: RoomService, private val tokenServ
     @GetMapping(
             value = ["/room"]
     )
-    fun getAffiliatedRoom(@RequestParam("access_token") token: String): List<Room> {
+    fun getAffiliatedRoom(@RequestHeader("access_token") token: String): List<Room> {
         val uId = tokenService.verifyAccessToken(token)
         return roomService.getRoomListFromUserId(uId)
     }
@@ -41,7 +41,7 @@ class RoomController(private val roomService: RoomService, private val tokenServ
     @PostMapping(
             value = ["/room/pair"]
     )
-    fun getPairRoom(@RequestParam("access_token") token: String,
+    fun getPairRoom(@RequestHeader("access_token") token: String,
                      @RequestBody request: PostPairRequest): Room {
         val userId = tokenService.verifyAccessToken(token)
         //Todo:friendNameから友達のIDを取得
