@@ -6,7 +6,7 @@ import java.sql.Timestamp
 //User登録用のクラス
 data class UserRegister(
         val name: String,
-        val screenName: String,
+        @JsonProperty("screen_name") val screenName: String,
         val password: String
 )
 
