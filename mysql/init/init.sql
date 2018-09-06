@@ -41,37 +41,3 @@ CREATE TABLE `tokens` (
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   INDEX(token)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-
-
--- サンプルのレコードの挿入
-
--- Table 1: ルーム情報
-
-INSERT INTO rooms (id, name) VALUES (1, "ルームA");
-INSERT INTO rooms (id, name) VALUES (2, "ルームB");
-INSERT INTO rooms (id, name) VALUES (3, "ルームC");
-
--- Table 3: ユーザー情報
-
-INSERT INTO users (id, name, screen_name, password) VALUES (1, "0918nobita", "Kodai", "password");
-INSERT INTO users (id, name, screen_name, password) VALUES (2, "test", "Test User #1", "abcdefg");
-INSERT INTO users (id, name, screen_name, password) VALUES (3, "test2", "Test User #2", "123456789");
-
--- Table 4: 1対1ルームの情報
-
-INSERT INTO pairs (room_id, user_id_1, user_id_2) VALUES (1, 1, 2);
-INSERT INTO pairs (room_id, user_id_1, user_id_2) VALUES (2, 1, 3);
-INSERT INTO pairs (room_id, user_id_1, user_id_2) VALUES (3, 2, 3);
-
--- Table 5: メッセージの情報
-
-INSERT INTO messges (message_id, sender_id, room_id, content, created) VALUES (1, 1, 1, "あ");
-INSERT INTO messges (message_id, sender_id, room_id, content, created) VALUES (2, 2, 1, "い");
-INSERT INTO messges (message_id, sender_id, room_id, content, created) VALUES (3, 3, 1, "う");
-INSERT INTO messges (message_id, sender_id, room_id, content, created) VALUES (4, 3, 2, "え");
-INSERT INTO messges (message_id, sender_id, room_id, content, created) VALUES (5, 2, 2, "お");
-INSERT INTO messges (message_id, sender_id, room_id, content, created) VALUES (6, 1, 2, "か");
-INSERT INTO messges (message_id, sender_id, room_id, content, created) VALUES (7, 2, 3, "き");
-INSERT INTO messges (message_id, sender_id, room_id, content, created) VALUES (8, 1, 3, "く");
-INSERT INTO messges (message_id, sender_id, room_id, content, created) VALUES (9, 3, 3, "け");
