@@ -36,7 +36,7 @@ CREATE TABLE `messages` (
 
 -- Table 6:アクセストークン
 CREATE TABLE `tokens` (
-  `user_id` int NOT NULL,
+  `user_id` int UNIQUE NOT NULL,
   `token` varchar(200) NOT NULL,
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   INDEX(token)
