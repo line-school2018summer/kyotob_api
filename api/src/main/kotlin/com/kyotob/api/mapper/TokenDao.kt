@@ -18,7 +18,7 @@ interface TokenDao {
     @Select(
             """
                 SELECT user_id, token, created
-                From tokens
+                FROM tokens
                 WHERE token=#{token}
             """
     )
@@ -39,4 +39,13 @@ interface TokenDao {
             """
     )
     fun delete(userId: Int): Boolean
+
+    @Insert(
+            """
+                INSERT INTO tokens (user_id, token)
+                VALUES (#{userId}, #{token})
+                ON DUPLICATE KEY UPDATE
+                    token=#{token}
+            """
+    )fun upsert(userId: Int, token: String): Boolean
 }

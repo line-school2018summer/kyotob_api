@@ -1,25 +1,35 @@
 package com.kyotob.api.service
 
-import org.springframework.stereotype.Service
 import com.kyotob.api.controller.UnauthorizedException
-import com.kyotob.api.model.Token
 import com.kyotob.api.mapper.TokenDao
+import  com.kyotob.api.mapper.UserDao
+import com.kyotob.api.model.Token
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
+import org.springframework.stereotype.Service
 import java.util.*
 
 
 @Service
-class TokenService(private val tokenDao: TokenDao) {
+class TokenService(private val tokenDao: TokenDao, private val userDao: UserDao) {
+
+    //userIdとpasswordが一致しているか判定するメソッド
+    fun isConsistent(userId: Int, password: String): Boolean {
+        val storedPassword:String = userDao.idToPassword(userId)
+        return BCryptPasswordEncoder().matches(password, storedPassword)
+    }
 
     fun getAccessToken(userId: Int, password: String): String {
-        //Todo: idとパスワードが正しいことを確認
+        //idとパスワードが正しいことを確認
+        if(!isConsistent(userId, password)){
+            //idとパスワードが一致しなければエラーを投げる
+            throw UnauthorizedException("id and password not match")
+        }
 
-        //
-        tokenDao.delete(userId)
-        //Todo: いい感じのトークンを返す
-        //とりあえずuserIdを文字列にしたやつをハッシュ化しておく
+        //UUIDと使う。
         val token: String = UUID.randomUUID().toString()
-        tokenDao.create(userId, token)
+        tokenDao.upsert(userId, token)
         return token
+
     }
 
     fun verifyAccessToken(accessToken: String): Int {

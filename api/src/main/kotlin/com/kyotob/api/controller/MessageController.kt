@@ -1,37 +1,43 @@
 package com.kyotob.api.controller
 import com.kyotob.api.model.GetMessageResponse // メッセージ受信用のモデル
-import com.kyotob.api.model.SendMessage // メッセージ送信用のモデル
+import com.kyotob.api.model.SendMessageRequest // メッセージ送信用のモデル
 import com.kyotob.api.service.MessageService // Message関連のサービス
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
 @RestController
-class MessageController(private val messageservice: MessageService) {
+class MessageController(private val messageService: MessageService) {
     // Messageの取得
     @GetMapping(
-            value = ["/message/{room_id}"],
+            value = ["/room/{room_id}/messages"],
             produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
     )
-    fun getMessage(@PathVariable("room_id") room_id: Int, @RequestHeader("Token") token: String): List<GetMessageResponse> {
+    fun getMessage(@PathVariable("room_id") roomId: Int, @RequestHeader("token") token: String): List<GetMessageResponse>? {
         // Tokenの持ち主がPair(ルーム)に存在するか確認する
-        if (messageservice.auth(room_id, token) == false) {
+        if (messageService.auth(roomId, token) == false) {
             // ルーム存在しない場合はErrorを投げる
             throw UnauthorizedException("TokenError")
         }
         // Tokenの認証ができたので、メッセージを取得してResponseとして返す
-        return messageservice.getmessagelist(room_id)
+        return messageService.getMessageList(roomId)
     }
     // Messageの送信
     @PostMapping(
-            value = ["/message"],
+            value = ["/room/{room_id}/messages"],
             produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
     )
-    fun sendMessage(@RequestBody request: SendMessage, @RequestHeader("Token") token: String):Boolean {
+    fun sendMessage(@PathVariable("room_id") roomId: Int, @RequestBody request: SendMessageRequest, @RequestHeader("token") token: String):Boolean {
+        // バリデーション
+        // 空文字を入力した場合
+        if(request.content.length == 0) throw BadRequestException("no content")
+        // 100文字以上の場合
+        if(request.content.length > 100) throw BadRequestException("over 100 content")
+
         // Tokenの持ち主がPair(ルーム)に存在するか確認する
-        if (messageservice.auth(request.room_id, token) == false) {
+        if (messageService.auth(roomId, token) == false) {
             // ルーム存在しない場合はErrorを投げる
             throw UnauthorizedException("TokenError")
         }
         // メッセージ送信
-        return messageservice.sendmessage(request)
+        return messageService.sendMessage(request, roomId)
     }
 }
