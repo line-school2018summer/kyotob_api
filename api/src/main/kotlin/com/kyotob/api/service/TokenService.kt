@@ -25,11 +25,9 @@ class TokenService(private val tokenDao: TokenDao, private val userDao: UserDao)
             throw UnauthorizedException("id and password not match")
         }
 
-        //一致すれば新しいtokenを発行
-        tokenDao.delete(userId)
         //UUIDと使う。
         val token: String = UUID.randomUUID().toString()
-        tokenDao.create(userId, token)
+        tokenDao.upsert(userId, token)
         return token
 
     }

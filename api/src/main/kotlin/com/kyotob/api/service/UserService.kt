@@ -77,9 +77,8 @@ class UserService(private val userDao: UserDao, private val tokenDao: TokenDao){
 
     //tokenを新規発行or更新するメソッド
     fun createNewToken(userId: Int):String{
-        tokenDao.delete(userId)  //古いtokenを削除
         val token: String = UUID.randomUUID().toString()  //新たにtokenを得る
-        tokenDao.create(userId, token)  //tokensに格納
+        tokenDao.upsert(userId, token)  //tokensに格納
         return token
     }
 }
