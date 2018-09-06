@@ -11,7 +11,7 @@ data class GetMessageResponse(
         val createdAt: Timestamp,
         val userName: String,
         val userScreenName: String,
-        val message: String
+        val content: String
 )
 // Message送信時のRequestの項目
 // Tokenで認証するので、user_nameが無くても誰か分かるんですが、あったほうが、Messageに追加しやすいので付けてます。
