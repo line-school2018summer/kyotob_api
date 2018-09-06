@@ -28,3 +28,6 @@ INSERT INTO `messages` (`message_id`, `sender_id`, `room_id`, `content`) VALUES 
 INSERT INTO `messages` (`message_id`, `sender_id`, `room_id`, `content`) VALUES (7, 2, 3, 'き');
 INSERT INTO `messages` (`message_id`, `sender_id`, `room_id`, `content`) VALUES (8, 1, 3, 'く');
 INSERT INTO `messages` (`message_id`, `sender_id`, `room_id`, `content`) VALUES (9, 3, 3, 'け');
+
+-- トークン
+INSERT INTO `tokens` (`user_id`, `token`) VALUES (1, 'foo')
