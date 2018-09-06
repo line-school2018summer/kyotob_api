@@ -27,11 +27,11 @@ class TokenService(private val tokenDao: TokenDao, private val userDao: UserDao)
 
         //一致すれば新しいtokenを発行
         tokenDao.delete(userId)
-        //とりあえずuserIdを文字列にしたやつをハッシュ化しておく
+        //UUIDと使う。
         val token: String = UUID.randomUUID().toString()
         tokenDao.create(userId, token)
         return token
-        
+
     }
 
     fun verifyAccessToken(accessToken: String): Int {
