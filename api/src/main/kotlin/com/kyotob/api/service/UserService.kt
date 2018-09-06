@@ -39,7 +39,7 @@ class UserService(private val userDao: UserDao, private val tokenDao: TokenDao){
     fun login(request: UserLogin): UserResponse{
         if (!userDao.isNameRegistered(request.name)) {
             //Userが登録されていない場合
-            throw UnauthorizedException("User name does not exist")
+            throw UnauthorizedException("User name or Password is wrong")
         }
         else{
             //Userが登録されている場合、passwordの正誤を確認
@@ -49,7 +49,7 @@ class UserService(private val userDao: UserDao, private val tokenDao: TokenDao){
             //passwordのハッシュ値が一致するか確認
             if(!BCryptPasswordEncoder().matches(givenPassword, storedPassword)){
                 //Passwordが間違っている場合
-                throw UnauthorizedException("Password is wrong")
+                throw UnauthorizedException("User Name or Password is wrong")
             }
             else{
                 //passwordがが合っている場合は新規発行のtokenを返す
