@@ -20,6 +20,30 @@ data class SendMessageRequest(
         @JsonProperty("content") val content: String
 )
 
+//User登録用のクラス
+data class UserRegister(
+        val name: String,
+        @JsonProperty("screen_name") val screenName: String,
+        val password: String
+)
+
+//Userログインのクラス
+data class UserLogin(
+        val name: String,
+        val password: String
+)
+
+//User登録のResponseでTokenを返すためのクラス
+data class UserResponse(
+        val token: String
+)
+
+//User検索のクラス
+data class UserSearch(
+        val name: String,
+        val screenName: String
+)
+
 data class Room(
         val id: Int,
         val name: String
