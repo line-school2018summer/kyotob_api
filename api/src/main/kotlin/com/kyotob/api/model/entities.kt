@@ -17,7 +17,6 @@ data class GetMessageResponse(
 // Tokenで認証するので、user_nameが無くても誰か分かるんですが、あったほうが、Messageに追加しやすいので付けてます。
 data class SendMessageRequest(
         @JsonProperty("user_name") val userName: String,
-        @JsonProperty("room_id") val roomId: Int,
         @JsonProperty("content") val content: String
 )
 

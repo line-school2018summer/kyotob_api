@@ -26,7 +26,7 @@ class MessageService(private val mdao: MessageDAO, private val tdao: TokenDao) {
         return mdao.findMessages(roomId)
     }
     // メッセージ送信時に呼ぶメソッド
-    fun sendMessage(request: SendMessageRequest): Boolean {
+    fun sendMessage(request: SendMessageRequest, roomId: Int): Boolean {
         // users.user_nameからusers.user_idを割り出す
         val userId: UserId? = mdao.getUserId(request.userName)
         if (userId == null) {
@@ -34,7 +34,7 @@ class MessageService(private val mdao: MessageDAO, private val tdao: TokenDao) {
             return false
         } else {
             // users.user_idを使って、messageをINSERTする
-            mdao.insertMessage(userId.userId, request.roomId, request.content)
+            mdao.insertMessage(userId.userId, roomId, request.content)
         }
         return true
     }

@@ -25,7 +25,7 @@ class MessageController(private val messageService: MessageService) {
             value = ["/room/{room_id}/messages"],
             produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
     )
-    fun sendMessage(@RequestBody request: SendMessageRequest, @RequestHeader("token") token: String):Boolean {
+    fun sendMessage(@PathVariable("room_id") roomId: Int, @RequestBody request: SendMessageRequest, @RequestHeader("token") token: String):Boolean {
         // バリデーション
         // 空文字を入力した場合
         if(request.content.length == 0) throw BadRequestException("no content")
@@ -33,11 +33,11 @@ class MessageController(private val messageService: MessageService) {
         if(request.content.length > 100) throw BadRequestException("over 100 content")
 
         // Tokenの持ち主がPair(ルーム)に存在するか確認する
-        if (messageService.auth(request.roomId, token) == false) {
+        if (messageService.auth(roomId, token) == false) {
             // ルーム存在しない場合はErrorを投げる
             throw UnauthorizedException("TokenError")
         }
         // メッセージ送信
-        return messageService.sendMessage(request)
+        return messageService.sendMessage(request, roomId)
     }
 }
