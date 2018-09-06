@@ -12,6 +12,7 @@ class BadRequestException(override val message: String) : Exception(message)
 class UnauthorizedException(override val message: String) : Exception(message)
 class InternalServerError(override val message: String) : Exception(message)
 class Conflict(override val message: String) : Exception(message)
+
 class NotFound(override val message: String) : Exception(message)
 
 @ControllerAdvice
