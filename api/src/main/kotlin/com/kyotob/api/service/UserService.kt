@@ -23,18 +23,16 @@ class UserService(private val userDao: UserDao, private val tokenDao: TokenDao){
             throw Conflict("User name already exists")
         }
         //Userが未登録ならば新しく登録
-        else{
-            //passwordのハッシュ化
-            val hashedPassword = BCryptPasswordEncoder().encode(request.password)
+        //passwordのハッシュ化
+        val hashedPassword = BCryptPasswordEncoder().encode(request.password)
 
-            //usersに追加
-            userDao.insertUser(request.name, request.screenName, hashedPassword)
+        //usersに追加
+        userDao.insertUser(request.name, request.screenName, hashedPassword)
 
-            //tokenを取得しtokensに(id, token)の組を格納
-            val token:String = createNewToken(userDao.getUser(request.name).id)
+        //tokenを取得しtokensに(id, token)の組を格納
+        val token:String = createNewToken(userDao.getUser(request.name).id)
 
-            return UserResponse(token)
-        }
+        return UserResponse(token)
     }
 
     //Userログインをするメソッド
