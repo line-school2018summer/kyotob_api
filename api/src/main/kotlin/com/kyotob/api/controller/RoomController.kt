@@ -2,6 +2,7 @@ package com.kyotob.api.controller
 
 import com.kyotob.api.service.RoomService
 import com.kyotob.api.service.TokenService
+import com.kyotob.api.mapper.UserDao
 import com.kyotob.api.model.Room
 import com.kyotob.api.model.Token
 import com.fasterxml.jackson.annotation.*
@@ -17,7 +18,7 @@ data class PostPairRequest (
 
 @RestController
 @RequestMapping(produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)])
-class RoomController(private val roomService: RoomService, private val tokenService: TokenService) {
+class RoomController(private val roomService: RoomService, private val tokenService: TokenService, private val userDao: UserDao) {
 
     //部屋一覧(デバッグ用)
     @GetMapping(
@@ -44,9 +45,9 @@ class RoomController(private val roomService: RoomService, private val tokenServ
     fun getPairRoom(@RequestHeader("access_token") token: String,
                      @RequestBody request: PostPairRequest): Room {
         val userId = tokenService.verifyAccessToken(token)
-        //Todo:friendNameから友達のIDを取得
-        // とりあえず2
-        val friendId = 2
+        //friendNameから友達のIDを取得
+        val friendId = userDao.getUser(request.friendUserName).id
+
         val roomName = "room"
         if (userId == friendId) throw BadRequestException("自分とルームを作ろうとしている")
         val minId = min(userId, friendId)
