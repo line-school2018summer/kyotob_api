@@ -24,7 +24,7 @@ data class UserResponse(
 //User検索のクラス
 data class UserSearch(
         val name: String,
-        val screenName: String
+        @JsonProperty("screen_name") val screenName: String
 )
 
 data class Room(
