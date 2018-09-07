@@ -28,3 +28,5 @@ INSERT INTO `messages` (`message_id`, `sender_id`, `room_id`, `content`) VALUES 
 
 -- トークン
 INSERT INTO `tokens` (`user_id`, `token`) VALUES (1, 'foo')
+INSERT INTO `tokens` (`user_id`, `token`) VALUES (2, 'bar')
+INSERT INTO `tokens` (`user_id`, `token`) VALUES (3, 'hoge')
