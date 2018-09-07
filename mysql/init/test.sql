@@ -24,8 +24,7 @@ INSERT INTO `messages` (`message_id`, `sender_id`, `room_id`, `content`) VALUES 
 INSERT INTO `messages` (`message_id`, `sender_id`, `room_id`, `content`) VALUES (3, 3, 2, 'う');
 INSERT INTO `messages` (`message_id`, `sender_id`, `room_id`, `content`) VALUES (5, 1, 2, 'え');
 INSERT INTO `messages` (`message_id`, `sender_id`, `room_id`, `content`) VALUES (6, 2, 3, 'お');
-INSERT INTO `messages` (`message_id`, `sender_id`, `room_id`, `content`) VALUES (7, 1, 3, 'か');
-INSERT INTO `messages` (`message_id`, `sender_id`, `room_id`, `content`) VALUES (8, 3, 3, 'き');
+INSERT INTO `messages` (`message_id`, `sender_id`, `room_id`, `content`) VALUES (8, 3, 3, 'か');
 
 -- トークン
 INSERT INTO `tokens` (`user_id`, `token`) VALUES (1, 'foo')
