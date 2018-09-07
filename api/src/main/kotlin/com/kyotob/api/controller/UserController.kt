@@ -36,7 +36,7 @@ class UserController(private val userService: UserService){
             value = ["user/search/{user_name}"],
             produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
     )
-    fun searchuser(@PathVariable("user_name") userName: String, @RequestHeader("Token") token:String): UserSearch{
+    fun searchuser(@PathVariable("user_name") userName: String, @RequestHeader("access_token") token:String): UserSearch{
         return userService.searchUser(userName, token)
     }
 
