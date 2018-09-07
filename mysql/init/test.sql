@@ -21,13 +21,12 @@ INSERT INTO `pairs` (`room_id`, `user_id_1`, `user_id_2`) VALUES (3, 2, 3);
 
 INSERT INTO `messages` (`message_id`, `sender_id`, `room_id`, `content`) VALUES (1, 1, 1, 'あ');
 INSERT INTO `messages` (`message_id`, `sender_id`, `room_id`, `content`) VALUES (2, 2, 1, 'い');
-INSERT INTO `messages` (`message_id`, `sender_id`, `room_id`, `content`) VALUES (3, 3, 1, 'う');
-INSERT INTO `messages` (`message_id`, `sender_id`, `room_id`, `content`) VALUES (4, 3, 2, 'え');
-INSERT INTO `messages` (`message_id`, `sender_id`, `room_id`, `content`) VALUES (5, 2, 2, 'お');
-INSERT INTO `messages` (`message_id`, `sender_id`, `room_id`, `content`) VALUES (6, 1, 2, 'か');
-INSERT INTO `messages` (`message_id`, `sender_id`, `room_id`, `content`) VALUES (7, 2, 3, 'き');
-INSERT INTO `messages` (`message_id`, `sender_id`, `room_id`, `content`) VALUES (8, 1, 3, 'く');
-INSERT INTO `messages` (`message_id`, `sender_id`, `room_id`, `content`) VALUES (9, 3, 3, 'け');
+INSERT INTO `messages` (`message_id`, `sender_id`, `room_id`, `content`) VALUES (3, 3, 2, 'え');
+INSERT INTO `messages` (`message_id`, `sender_id`, `room_id`, `content`) VALUES (4, 2, 2, 'お');
+INSERT INTO `messages` (`message_id`, `sender_id`, `room_id`, `content`) VALUES (5, 1, 2, 'か');
+INSERT INTO `messages` (`message_id`, `sender_id`, `room_id`, `content`) VALUES (6, 2, 3, 'き');
+INSERT INTO `messages` (`message_id`, `sender_id`, `room_id`, `content`) VALUES (7, 1, 3, 'く');
+INSERT INTO `messages` (`message_id`, `sender_id`, `room_id`, `content`) VALUES (8, 3, 3, 'け');
 
 -- トークン
 INSERT INTO `tokens` (`user_id`, `token`) VALUES (1, 'foo')
