@@ -81,4 +81,11 @@ class UserService(private val userDao: UserDao, private val tokenDao: TokenDao){
         tokenDao.upsert(userId, token)  //tokensに格納
         return token
     }
+
+    fun updateScreenName(accessToken: String, name: String, newScreenName: String) {
+        //token確認
+        searchUser(name, accessToken)
+        val user = userDao.getUser(name)
+        userDao.updateScreenName(user.id, newScreenName)
+    }
 }
