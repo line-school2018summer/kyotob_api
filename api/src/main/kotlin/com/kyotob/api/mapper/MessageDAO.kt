@@ -4,6 +4,9 @@ import com.kyotob.api.model.UserId // user_idを割り出す用のモデル
 import org.apache.ibatis.annotations.Insert
 import org.apache.ibatis.annotations.Mapper
 import org.apache.ibatis.annotations.Select
+import org.springframework.stereotype.Component
+
+@Component
 @Mapper
 interface MessageDAO {
     // Message取得用のSQL文

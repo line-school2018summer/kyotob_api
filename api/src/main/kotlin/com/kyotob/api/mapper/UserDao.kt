@@ -2,7 +2,9 @@ package com.kyotob.api.mapper
 
 import org.apache.ibatis.annotations.*
 import com.kyotob.api.model.User
+import org.springframework.stereotype.Component
 
+@Component
 @Mapper
 interface UserDao {
 

@@ -75,3 +75,8 @@ data class Message(
         val content: String,
         @get:JsonProperty("created_at") val createdAt: Timestamp
 )
+
+data class UsersRooms(
+        val roomId: Int,
+        val userId: Int
+)

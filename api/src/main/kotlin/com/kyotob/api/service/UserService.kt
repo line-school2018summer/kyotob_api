@@ -81,4 +81,8 @@ class UserService(private val userDao: UserDao, private val tokenDao: TokenDao){
         tokenDao.upsert(userId, token)  //tokensに格納
         return token
     }
+
+    fun getUser(userName: String): User {
+        return userDao.getUser(userName)
+    }
 }

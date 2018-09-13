@@ -4,21 +4,29 @@ import com.kyotob.api.service.RoomService
 import com.kyotob.api.service.TokenService
 import com.kyotob.api.mapper.UserDao
 import com.kyotob.api.model.Room
-import com.kyotob.api.model.Token
 import com.fasterxml.jackson.annotation.*
+import com.kyotob.api.mapper.groupMapper
+import com.kyotob.api.service.UserService
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
 import kotlin.math.max
 import kotlin.math.min
 
 data class PostPairRequest (
-        @JsonProperty("friend_user_name")
-        val friendUserName: String
+        @JsonProperty("user_name")
+        val userName: String
+)
+
+data class PostGroupRequest (
+        @JsonProperty("room_name")
+        val roomName: String,
+        @JsonProperty("user_name_list")
+        val userNameList: List<PostPairRequest>
 )
 
 @RestController
 @RequestMapping(produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)])
-class RoomController(private val roomService: RoomService, private val tokenService: TokenService, private val userDao: UserDao) {
+class RoomController(private val roomService: RoomService, private val tokenService: TokenService, private val userService: UserService) {
 
     //部屋一覧(デバッグ用)
     @GetMapping(
@@ -46,7 +54,7 @@ class RoomController(private val roomService: RoomService, private val tokenServ
                      @RequestBody request: PostPairRequest): Room {
         val userId = tokenService.verifyAccessToken(token)
         //friendNameから友達のIDを取得
-        val friendId = userDao.getUser(request.friendUserName).id
+        val friendId = userService.getUser(request.userName).id
 
         val roomName = "room"
         if (userId == friendId) throw BadRequestException("自分とルームを作ろうとしている")
@@ -61,4 +69,18 @@ class RoomController(private val roomService: RoomService, private val tokenServ
         }
         return roomService.getRoomFromRoomId(pair.roomId)
     }
+
+    @PostMapping(
+            value = ["/room"]
+    )
+    fun createGroupRoom(@RequestHeader("access_token") token: String,
+                    @RequestBody request: PostGroupRequest): Unit {
+        tokenService.verifyAccessToken(token)
+        val userIdList: List<Int> = request.userNameList.map {userService.getUser(it.userName).id}
+        roomService.createGroupRoom(request.roomName, userIdList)
+    }
+
+    @PutMapping(
+            value = ["/room/{room_id}"]
+    )
 }
