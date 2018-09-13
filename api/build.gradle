@@ -51,6 +51,11 @@ dependencies {
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 	testCompile('org.junit.jupiter:junit-jupiter-api')
 	testCompile('org.dbunit:dbunit:2.5.4')
+	// pusher
+    compile group: 'com.pusher', name: 'pusher-http-java', version: '1.0.0'
+	// Tyrus
+	compile group: 'org.glassfish.tyrus', name: 'tyrus-container-grizzly-server', version: 1.13
+	compile group: 'org.glassfish.tyrus', name: 'tyrus-server', version: 1.13
 }
 
 jar {

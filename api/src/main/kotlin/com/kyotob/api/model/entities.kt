@@ -75,3 +75,8 @@ data class Message(
         val content: String,
         @get:JsonProperty("created_at") val createdAt: Timestamp
 )
+
+// サーバーからWebSocketのプロトコルを使ってメッセージを送るときに使うメッセージ
+data class WebSocketMSG(
+        val roomId: Int
+)
