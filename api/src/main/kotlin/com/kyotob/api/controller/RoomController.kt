@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*
 import kotlin.math.max
 import kotlin.math.min
 
-data class PostPairRequest (
+data class UserNameRequest(
         @JsonProperty("user_name")
         val userName: String
 )
@@ -21,8 +21,9 @@ data class PostGroupRequest (
         @JsonProperty("room_name")
         val roomName: String,
         @JsonProperty("user_name_list")
-        val userNameList: List<PostPairRequest>
+        val userNameList: List<UserNameRequest>
 )
+
 
 @RestController
 @RequestMapping(produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)])
@@ -51,7 +52,7 @@ class RoomController(private val roomService: RoomService, private val tokenServ
             value = ["/room/pair"]
     )
     fun getPairRoom(@RequestHeader("access_token") token: String,
-                     @RequestBody request: PostPairRequest): Room {
+                     @RequestBody request: UserNameRequest): Room {
         val userId = tokenService.verifyAccessToken(token)
         //friendNameから友達のIDを取得
         val friendId = userService.getUser(request.userName).id
@@ -83,4 +84,13 @@ class RoomController(private val roomService: RoomService, private val tokenServ
     @PutMapping(
             value = ["/room/{room_id}"]
     )
+    fun addMemberToGroup(@RequestHeader("access_token") token: String,
+                         @PathVariable("room_id") roomId: Int,
+                         @RequestBody request: PostGroupRequest): Unit {
+        tokenService.verifyAccessToken(token)
+        roomService.updateName(roomId,request.roomName)
+        if (request.userNameList.isEmpty()) return
+        val userIdList = request.userNameList.map {userService.getUser(it.userName).id}
+        roomService.appendUsersIntoGroup(roomId, userIdList)
+    }
 }

@@ -77,4 +77,8 @@ class RoomService(private val roomMapper: RoomMapper, private val pairMapper: Pa
         pairMapper.delete(roomId)
         roomMapper.delete(roomId)
     }
+
+    fun updateName(roomId: Int, newName: String): Unit {
+        roomMapper.updateName(roomId, newName)
+    }
 }
