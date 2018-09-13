@@ -3,7 +3,7 @@
 -- Table 1: ルーム情報
 
 INSERT INTO `rooms` (`id`, `name`) VALUES
-  (1, 'ルームA'), (2, 'ルームB'), (3, 'ルームC');
+  (1, 'ルームA'), (2, 'ルームB'), (3, 'ルームC'), (4, 'ルームD');
 
 -- Table 3: ユーザー情報
 INSERT INTO users (`id`, `name`, `screen_name`, `password`) VALUES
@@ -22,9 +22,13 @@ INSERT INTO `messages` (`message_id`, `sender_id`, `room_id`, `content`) VALUES
   (1, 1, 1, 'あ'),
   (2, 2, 1, 'い'),
   (3, 3, 2, 'う'),
+  (4, 3, 4, 'は'),
   (5, 1, 2, 'え'),
   (6, 2, 3, 'お'),
   (8, 3, 3, 'か');
 
 -- トークン
 INSERT INTO `tokens` (`user_id`, `token`) VALUES (1, 'foo'), (2, 'bar'), (3, 'hoge');
+
+-- グループ情報
+INSERT INTO `users_rooms` (`room_id`, `user_id`) VALUES (4, 1), (4, 2), (4, 3);

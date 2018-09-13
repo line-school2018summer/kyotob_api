@@ -41,3 +41,10 @@ CREATE TABLE `tokens` (
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   INDEX(token)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Table 7: グループルーム情報を格納するテーブルを作成
+CREATE TABLE `users_rooms` (
+  `room_id` int NOT NULL,
+  `user_id` int NOT NULL,
+  unique(`room_id`,`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
