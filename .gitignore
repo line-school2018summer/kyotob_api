@@ -27,7 +27,7 @@
 
 ### DB ###
 mysql/
-!init/init.sql
+!init/*
 !Dockerfile
 !my.cnf
 !.gitkeep
