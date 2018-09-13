@@ -6,6 +6,8 @@ import com.kyotob.api.mapper.UserDao
 import com.kyotob.api.model.Room
 import com.kyotob.api.model.Token
 import com.fasterxml.jackson.annotation.*
+import com.kyotob.api.model.Pair
+import com.kyotob.api.service.UserService
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
 import kotlin.math.max
@@ -16,9 +18,18 @@ data class PostPairRequest (
         val friendUserName: String
 )
 
+data class GetRoomResponse (
+        @JsonProperty("room_id")
+        val roomId: Int,
+        @JsonProperty("room_name")
+        val roomName: String,
+        @JsonProperty("recent_message")
+        val recentMessage: String
+)
+
 @RestController
 @RequestMapping(produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)])
-class RoomController(private val roomService: RoomService, private val tokenService: TokenService, private val userDao: UserDao) {
+class RoomController(private val userService: UserService, val roomService: RoomService, private val tokenService: TokenService, private val userDao: UserDao) {
 
     //部屋一覧(デバッグ用)
     @GetMapping(
@@ -32,9 +43,20 @@ class RoomController(private val roomService: RoomService, private val tokenServ
     @GetMapping(
             value = ["/room"]
     )
-    fun getAffiliatedRoom(@RequestHeader("access_token") token: String): List<Room> {
-        val uId = tokenService.verifyAccessToken(token)
-        return roomService.getRoomListFromUserId(uId)
+    fun getAffiliatedRoom(@RequestHeader("access_token") token: String): List<GetRoomResponse> {
+
+        fun getFriendUserScreenName(userId: Int, pair: Pair): String {
+            val friendId = if(userId == pair.userId1) pair.userId2 else pair.userId1
+            return userService.getUserFromId(friendId).screenName
+        }
+
+        val userId = tokenService.verifyAccessToken(token)
+        val roomList = roomService.getPairRoomListFromUserId(userId)
+        //todo: group
+        //todo: recentmessage
+        return roomList.map { GetRoomResponse(it.id,
+                getFriendUserScreenName(userId, roomService.getPairFromRoomId(it.id)!!),
+                "recentMessage") }
     }
 
 

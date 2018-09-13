@@ -2,6 +2,7 @@ package com.kyotob.api.service
 
 import com.kyotob.api.controller.Conflict
 import com.kyotob.api.controller.UnauthorizedException
+import com.kyotob.api.controller.InternalServerError
 import com.kyotob.api.controller.NotFound
 import com.kyotob.api.mapper.TokenDao
 import com.kyotob.api.mapper.UserDao
@@ -33,6 +34,10 @@ class UserService(private val userDao: UserDao, private val tokenDao: TokenDao){
         val token:String = createNewToken(userDao.getUser(request.name).id)
 
         return UserResponse(token)
+    }
+
+    fun getUserFromId(id: Int): User {
+        return userDao.getUserFromId(id) ?: throw InternalServerError("getUserFromId")
     }
 
     //Userログインをするメソッド

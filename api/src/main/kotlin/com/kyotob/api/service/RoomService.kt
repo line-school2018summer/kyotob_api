@@ -31,7 +31,7 @@ class RoomService(private val roomMapper: RoomMapper, private val pairMapper: Pa
         return pairMapper.findByTwoUserId(userId1, userId2)
     }
 
-    fun getRoomListFromUserId(userId: Int): List<Room> {
+    fun getPairRoomListFromUserId(userId: Int): List<Room> {
         val pairs = pairMapper.findByUserId(userId)
         //pairsテーブルとroomsテーブルは整合性がなければならない
         //nullがあれば例外を投げる
