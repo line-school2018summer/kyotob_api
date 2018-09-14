@@ -1,36 +1,12 @@
 package com.kyotob.api
 
-import com.google.gson.Gson
-import com.kyotob.api.model.WebSocketMSG
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
 import java.util.concurrent.CopyOnWriteArraySet
 import javax.websocket.*
 import javax.websocket.server.PathParam
 import javax.websocket.server.ServerEndpoint
 
-// Test用 "http://localhost:8080/"にアクセスすると
-// user_id:abcに対して、指定のroomをリロードしろという意図のjsonデータを送る
-@RestController
-class Test {
-    @RequestMapping(value = ["/"])
-    fun index(){
-        // (session.pathParameters["user_id"] == "abc")の"abc"をuserIdに置き換えることで、
-        // 特定のユーザーに対して、サーバーから
-        // 「特定のroomに新着メッセージがある」という意図のJsonメッセージを送る
-        for(session in WebSocketServer.sessions) {
-            try{
-                if(session.pathParameters["user_id"] == "abc")
-                // Jsonを送る方法は要検討。
-                // RoomIdは動的に変える
-                    session.asyncRemote.sendObject(Gson().toJson(WebSocketMSG(1)))
-            } catch (e: Exception) {} // ClientがCloseせずにConnectionを切断したときの例外
-        }
-    }
-}
 
-
-@ServerEndpoint("/chat/{user_id}")
+@ServerEndpoint("/{user_name}")
 class WebSocketServer {
 
     companion object {
@@ -42,7 +18,7 @@ class WebSocketServer {
 
     // Socket通信を開始するリクエストを処理する
     @OnOpen
-    fun onOpen(@PathParam("user_id") userId: String, session: Session) {
+    fun onOpen(@PathParam("user_name") userId: String, session: Session) {
         println("SESSION STARTED BY: $userId") // System Console
         session.asyncRemote.sendText("WebSocket通信を開始します。") // クライアントに通信の開始を知らせる
         sessions.add(session) // Sessionを追加
@@ -50,7 +26,7 @@ class WebSocketServer {
 
     // Messageを送信するリクエストを処理する(通信が増えるだけなので基本的に使う気はない)
     @OnMessage
-    fun onMessage(@PathParam("user_id") userId: String, message: String, session: Session) {
+    fun onMessage(@PathParam("user_name") userId: String, message: String, session: Session) {
         println("MESSAGE WAS SENT BY: $userId") // System Console
         session.asyncRemote.sendText("You can't send message")
     }
@@ -58,7 +34,7 @@ class WebSocketServer {
 
     // Socket通信を終了するリクエストを処理する
     @OnClose
-    fun onClose(@PathParam("user_id") userId: String, session: Session) {
+    fun onClose(@PathParam("user_name") userId: String, session: Session) {
         println("SESSION CLOSED BY: $userId") // System Console
         session.asyncRemote.sendText("WebSocket通信を終了します。") // クライアントに通信の終了を知らせる
         sessions.remove(session) // Sessionを削除
