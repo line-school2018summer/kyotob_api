@@ -2,10 +2,6 @@ package com.kyotob.api.model
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import java.sql.Timestamp
-// users.user_nameからusers.user_idを割り出す用
-data class UserId(
-        val userId: Int
-)
 // Messageの取得時に返すResponseの項目
 data class GetMessageResponse(
         val createdAt: Timestamp,
