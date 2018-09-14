@@ -2,10 +2,6 @@ package com.kyotob.api.model
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import java.sql.Timestamp
-// users.user_nameからusers.user_idを割り出す用
-data class UserId(
-        val userId: Int
-)
 // Messageの取得時に返すResponseの項目
 data class GetMessageResponse(
         val createdAt: Timestamp,
@@ -16,7 +12,7 @@ data class GetMessageResponse(
 // Message送信時のRequestの項目
 // Tokenで認証するので、user_nameが無くても誰か分かるんですが、あったほうが、Messageに追加しやすいので付けてます。
 data class SendMessageRequest(
-        @JsonProperty("user_name") val userName: String,
+        @JsonProperty("user_name") val userName: String, // クライアント側で対応させれば消していい
         @JsonProperty("content") val content: String
 )
 
@@ -77,6 +73,9 @@ data class Message(
 )
 
 // サーバーからWebSocketのプロトコルを使ってメッセージを送るときに使うメッセージ
-data class WebSocketMSG(
-        val roomId: Int
+data class WebSocketMessage(
+        val createdAt: Timestamp,
+        val screenName: String,
+        val roomId: Int,
+        val content: String
 )
