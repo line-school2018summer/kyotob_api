@@ -1,7 +1,7 @@
 package com.kyotob.api.mapper
 
 
-import com.kyotob.api.model.Pair
+import com.kyotob.api.model.*
 import org.apache.ibatis.annotations.*
 import org.springframework.stereotype.Component
 
@@ -25,14 +25,15 @@ interface PairMapper {
     )
     fun findByRoomId(roomId: Int): Pair?
 
+    // pairsテーブルとroomsテーブルを内部結合させて新着メッセージと時間を一緒に取得する
     @Select(
             """
-                SELECT room_id, user_id_1, user_id_2
-                FROM pairs
-                WHERE user_id_1=#{userId} OR user_id_2=#{userId}
+                SELECT pairs.room_id, pairs.user_id_1, pairs.user_id_2, rooms.content, rooms.created
+                FROM pairs INNER JOIN rooms
+                ON pairs.room_id = rooms.id
+                WHERE pairs.user_id_1=#{userId} OR pairs.user_id_2=#{userId}
             """
-    )
-    fun findByUserId(userId: Int): ArrayList<Pair>
+    ) fun findRoomsByUserId(userId: Int): ArrayList<Rooms>
 
     @Select(
             """

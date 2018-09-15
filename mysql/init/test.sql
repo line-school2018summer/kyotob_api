@@ -2,8 +2,8 @@
 
 -- Table 1: ルーム情報
 
-INSERT INTO `rooms` (`id`, `name`) VALUES
-  (1, 'ルームA'), (2, 'ルームB'), (3, 'ルームC');
+INSERT INTO `rooms` (`id`, `name`, `content`) VALUES
+  (1, 'ルームA', 'い'), (2, 'ルームB', 'え'), (3, 'ルームC', 'か');
 
 -- Table 3: ユーザー情報
 INSERT INTO users (`id`, `name`, `screen_name`, `password`) VALUES

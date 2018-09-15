@@ -4,6 +4,8 @@ USE kyotob;
 CREATE TABLE `rooms` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(20) NOT NULL,
+  `content` varchar(140) NOT NULL,
+  `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 

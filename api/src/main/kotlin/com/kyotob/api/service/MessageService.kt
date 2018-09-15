@@ -27,7 +27,10 @@ class MessageService(private val mdao: MessageDAO, private val tdao: TokenDao) {
     }
     // メッセージ送信時に呼ぶメソッド
     fun sendMessage(request: SendMessageRequest, roomId: Int, userIdByToken: Int): Boolean {
+        // Messageを追加する
         mdao.insertMessage(userIdByToken, roomId, request.content)
+        // Roomテーブルの最新メッセージを更新する
+
         return true
     }
 
