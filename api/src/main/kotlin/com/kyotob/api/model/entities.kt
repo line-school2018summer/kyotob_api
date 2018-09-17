@@ -12,7 +12,7 @@ data class GetMessageResponse(
 // Message送信時のRequestの項目
 // Tokenで認証するので、user_nameが無くても誰か分かるんですが、あったほうが、Messageに追加しやすいので付けてます。
 data class SendMessageRequest(
-        @JsonProperty("user_name") val userName: String,
+        @JsonProperty("user_name") val userName: String, // クライアント側で対応させれば消していい
         @JsonProperty("content") val content: String
 )
 
@@ -78,4 +78,12 @@ data class Rooms(
         val userId2: Int,
         val recentMessage: String,
         val createdAt: Timestamp
+)
+
+// サーバーからWebSocketのプロトコルを使ってメッセージを送るときに使うメッセージ
+data class WebSocketMessage(
+        val createdAt: Timestamp,
+        val screenName: String,
+        val roomId: Int,
+        val content: String
 )
