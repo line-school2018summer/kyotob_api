@@ -67,6 +67,7 @@ class ImageController() {
             byteArray = Files.readAllBytes(path)
         } catch (e: IOException) {
             e.printStackTrace()
+            throw BadRequestException("Not Found")
         }
 
         // レスポンスデータとして返却
