@@ -32,6 +32,7 @@ interface PairMapper {
                 FROM pairs INNER JOIN rooms
                 ON pairs.room_id = rooms.id
                 WHERE pairs.user_id_1=#{userId} OR pairs.user_id_2=#{userId}
+                ORDER BY rooms.created DESC
             """
     ) fun findRoomsByUserId(userId: Int): ArrayList<Rooms>
 
