@@ -3,11 +3,15 @@ package com.kyotob.api.controller
 import com.kyotob.api.service.RoomService
 import com.kyotob.api.service.TokenService
 import com.kyotob.api.mapper.UserDao
-import com.kyotob.api.model.Room
-import com.kyotob.api.model.Token
+import com.kyotob.api.model.*
 import com.fasterxml.jackson.annotation.*
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.kyotob.api.WebSocketServer
+import com.kyotob.api.mapper.MessageDAO
+import com.kyotob.api.service.UserService
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
+import java.sql.Timestamp
 import kotlin.math.max
 import kotlin.math.min
 
@@ -15,10 +19,20 @@ data class PostPairRequest (
         @JsonProperty("friend_user_name")
         val friendUserName: String
 )
+// Room一覧用のResponse
+data class GetRoomResponse(
+        @JsonProperty("room_id")
+        val roomId: Int,
+        val name: String,
+        @JsonProperty("recent_message")
+        val recentMessage: String,
+        @JsonProperty("created_at")
+        val createdAt: Timestamp
+)
 
 @RestController
 @RequestMapping(produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)])
-class RoomController(private val roomService: RoomService, private val tokenService: TokenService, private val userDao: UserDao) {
+class RoomController(private val userService: UserService, val roomService: RoomService, private val tokenService: TokenService, private val userDao: UserDao, private val mdao: MessageDAO) {
 
     //部屋一覧(デバッグ用)
     @GetMapping(
@@ -32,11 +46,27 @@ class RoomController(private val roomService: RoomService, private val tokenServ
     @GetMapping(
             value = ["/room"]
     )
-    fun getAffiliatedRoom(@RequestHeader("access_token") token: String): List<Room> {
-        val uId = tokenService.verifyAccessToken(token)
-        return roomService.getRoomListFromUserId(uId)
+    fun getAffiliatedRoom(@RequestHeader("access_token") token: String): List<GetRoomResponse> {
+        // 友達の表示名を取得する関数
+        fun getFriendUserScreenName(myUserId: Int, userId1: Int, userId2: Int): String {
+            val friendId = if(myUserId == userId1) userId2 else userId1
+            return userService.getUserFromId(friendId).screenName
+        }
+        // TokenからUserIdを取得する
+        val userId = tokenService.verifyAccessToken(token)
+        // UserIdからRoom一覧を取得する
+        val rooms = roomService.getRoomListFromUserId(userId)
+        //todo: group
+        // Response用に整形する
+        return rooms.map {
+            GetRoomResponse(
+                    it.roomId,
+                    getFriendUserScreenName(userId, it.userId1, it.userId2),
+                    it.recentMessage,
+                    it.createdAt
+            )
+        }
     }
-
 
     //一対一ルーム取得
     @PostMapping(
@@ -57,8 +87,32 @@ class RoomController(private val roomService: RoomService, private val tokenServ
         //ルームが存在するかどうかで挙動が変わる
         if (pair == null) {
             val roomId = roomService.createPairRoom(minId, maxId, roomName)
+            sendNotification(roomId, request.friendUserName)
             return roomService.getRoomFromRoomId(roomId)
         }
         return roomService.getRoomFromRoomId(pair.roomId)
+    }
+
+    fun sendNotification(roomId: Int, userName: String) {
+        for(session in WebSocketServer.sessions) {
+            try {
+                if(session.pathParameters["user_name"] == userName) {
+                    val messages: List<GetMessageResponse>? = mdao.findMessages(roomId) // roomのメッセージをすべて取得する
+                    // ルームが出来たことを知らせる
+                    session.asyncRemote.sendText(
+                            jacksonObjectMapper().writeValueAsString(
+                                    WebSocketMessage(
+                                            messages!!.last().createdAt,
+                                            messages.last().userScreenName,
+                                            roomId,
+                                            messages.last().content
+                                    )
+                            )
+                    )
+                }
+            } catch (e: Exception) { // Sessionが切断されていたときの処理
+                WebSocketServer.sessions.remove(session) // Sessionを削除
+            }
+        }
     }
 }

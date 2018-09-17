@@ -2,7 +2,9 @@ package com.kyotob.api.mapper
 
 import org.apache.ibatis.annotations.*
 import com.kyotob.api.model.User
+import org.springframework.stereotype.Component
 
+@Component
 @Mapper
 interface UserDao {
 
@@ -31,6 +33,14 @@ interface UserDao {
             """
     )fun getUser(name: String): User
 
+    @Select(
+            """
+                SELECT id, name, screen_name, password
+                From users
+                WHERE id=#{id}
+            """
+    )fun getUserFromId(id: Int): User?
+
     //idからpasswordを割り出す
     @Select(
             """
@@ -39,4 +49,12 @@ interface UserDao {
                 WHERE id=#{userId}
             """
     )fun idToPassword(userId:Int): String
+
+    @Update(
+            """
+                UPDATE users
+                SET screen_name=#{newScreenName}
+                WHERE id=#{userId}
+            """
+    )fun updateScreenName(userId: Int, newScreenName: String): Unit
 }

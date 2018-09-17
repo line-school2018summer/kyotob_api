@@ -1,24 +1,27 @@
 package com.kyotob.api.service
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.kyotob.api.WebSocketServer
+import com.kyotob.api.WebSocketServer.Companion.sessions
 import com.kyotob.api.mapper.MessageDAO // Message関連のMapper
+import com.kyotob.api.mapper.RoomMapper
 import com.kyotob.api.mapper.TokenDao // Token関連のMapper
-import com.kyotob.api.model.GetMessageResponse // Message受信時のレスポンス用モデル
-import com.kyotob.api.model.SendMessageRequest // Message送信時のリクエスト用モデル
-import com.kyotob.api.model.UserId // users.user_nameからusers.user_idを割り出す用
-import com.kyotob.api.model.Token // TokenDao使用時のモデル
+import com.kyotob.api.model.*
 import org.springframework.stereotype.Service
 @Service
-class MessageService(private val mdao: MessageDAO, private val tdao: TokenDao) {
+class MessageService(private val mdao: MessageDAO, private val tdao: TokenDao, private val roomMapper: RoomMapper) {
     // 認証時に呼ぶメソッド
-    fun auth(roomId: Int, token: String): Boolean {
+    fun auth(roomId: Int, token: String): Int {
         // Tokenから情報を取得する
         val userInfoByToken: Token? = tdao.findByToken(token)
-        // userが存在しない場合はfalseを返す
-        if(userInfoByToken == null) return false
-
-        // roomにuserIdが存在するか
-        if(mdao.userExitInRoom(roomId, userInfoByToken.userId)) return true
-        // 存在しなければfalseを返す
-        return false
+        userInfoByToken?.let {
+            // roomにuserIdが存在するか
+            if(mdao.userExitInRoom(roomId, userInfoByToken.userId)) return userInfoByToken.userId
+            // 存在しなければfalseを返す
+            return -1
+        } ?: run {
+            // userInfoByTokenがnullの場合はfalseを返す
+            return -1
+        }
     }
     // メッセージ取得時に呼ぶメソッド
     fun getMessageList(roomId: Int): List<GetMessageResponse>? {
@@ -26,16 +29,38 @@ class MessageService(private val mdao: MessageDAO, private val tdao: TokenDao) {
         return mdao.findMessages(roomId)
     }
     // メッセージ送信時に呼ぶメソッド
-    fun sendMessage(request: SendMessageRequest, roomId: Int): Boolean {
-        // users.user_nameからusers.user_idを割り出す
-        val userId: UserId? = mdao.getUserId(request.userName)
-        if (userId == null) {
-            // 該当しない場合はfalseを返す
-            return false
-        } else {
-            // users.user_idを使って、messageをINSERTする
-            mdao.insertMessage(userId.userId, roomId, request.content)
-        }
+    fun sendMessage(request: SendMessageRequest, roomId: Int, userIdByToken: Int): Boolean {
+        // Messageを追加する
+        mdao.insertMessage(userIdByToken, roomId, request.content)
+
+        // RoomテーブルのRecentMessageを更新する
+        roomMapper.updateRecentMessage(request.content, roomId)
+
+        //WebSocketを使って、メッセージの新着を知らせる
+        sendNotification(request, roomId)
         return true
+    }
+
+    fun sendNotification(request: SendMessageRequest, roomId: Int) {
+        for(session in WebSocketServer.sessions) {
+            try {
+                if(session.pathParameters["user_name"] == request.userName) {
+                    val messages: List<GetMessageResponse>? = mdao.findMessages(roomId) // roomのメッセージをすべて取得する
+                    // 新着メッセージを知らせる
+                    session.asyncRemote.sendText(
+                            jacksonObjectMapper().writeValueAsString(
+                                    WebSocketMessage(
+                                            messages!!.last().createdAt,
+                                            messages.last().userScreenName,
+                                            roomId,
+                                            messages.last().content
+                                    )
+                            )
+                    )
+                }
+            } catch (e: Exception) { // Sessionが切断されていたときの処理
+                WebSocketServer.sessions.remove(session) // Sessionを削除
+            }
+        }
     }
 }

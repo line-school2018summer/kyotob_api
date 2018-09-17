@@ -1,5 +1,6 @@
 .gradle
 /api/build/
+/api/lib/
 !gradle/wrapper/gradle-wrapper.jar
 
 ### STS ###
@@ -27,7 +28,7 @@
 
 ### DB ###
 mysql/
-!init/init.sql
+!init/*
 !Dockerfile
 !my.cnf
 !.gitkeep

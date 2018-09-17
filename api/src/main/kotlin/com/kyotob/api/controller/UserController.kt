@@ -1,5 +1,6 @@
 package com.kyotob.api.controller
 
+import com.fasterxml.jackson.annotation.JsonProperty
 import com.kyotob.api.model.UserRegister //User登録用のモデル
 import com.kyotob.api.model.UserLogin //User認証用のモデル
 import com.kyotob.api.model.UserResponse //Userレスポンス用のモデル
@@ -10,6 +11,10 @@ import com.kyotob.api.service.UserService // User関連のサービス
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
 
+
+data class PutNewNameRequest  (
+        @JsonProperty("new_screen_name")
+        val newName: String)
 
 @RestController
 class UserController(private val userService: UserService){
@@ -36,9 +41,11 @@ class UserController(private val userService: UserService){
             value = ["user/search/{user_name}"],
             produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
     )
-    fun searchuser(@PathVariable("user_name") userName: String, @RequestHeader("Token") token:String): UserSearch{
+    fun searchuser(@PathVariable("user_name") userName: String, @RequestHeader("access_token") token:String): UserSearch{
         return userService.searchUser(userName, token)
+  }
+
+    @PutMapping( value = ["user/{user_name}"], produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)] ) fun putUser(@PathVariable("user_name") userName: String, @RequestHeader("access_token") token: String, @RequestBody request: PutNewNameRequest): Unit {
+        userService.updateScreenName(token, userName, request.newName)
     }
-
-
 }
