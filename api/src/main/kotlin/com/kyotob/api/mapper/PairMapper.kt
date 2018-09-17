@@ -28,7 +28,7 @@ interface PairMapper {
     // pairsテーブルとroomsテーブルを内部結合させて新着メッセージと時間を一緒に取得する
     @Select(
             """
-                SELECT pairs.room_id, pairs.user_id_1, pairs.user_id_2, rooms.content, rooms.created
+                SELECT pairs.room_id, pairs.user_id_1, pairs.user_id_2, rooms.recent_message, rooms.created
                 FROM pairs INNER JOIN rooms
                 ON pairs.room_id = rooms.id
                 WHERE pairs.user_id_1=#{userId} OR pairs.user_id_2=#{userId}

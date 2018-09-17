@@ -21,7 +21,7 @@ data class GetRoomResponse(
         @JsonProperty("room_id")
         val roomId: Int,
         val name: String,
-        val content: String,
+        val recentMessage: String,
         @JsonProperty("created_at")
         val createdAt: Timestamp
 )
@@ -58,7 +58,7 @@ class RoomController(private val userService: UserService, val roomService: Room
             GetRoomResponse(
                     it.roomId,
                     getFriendUserScreenName(userId, it.userId1, it.userId2),
-                    it.content,
+                    it.recentMessage,
                     it.createdAt
             )
         }

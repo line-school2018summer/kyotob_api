@@ -36,7 +36,7 @@ interface RoomMapper {
 
     @Insert(
             """
-                INSERT INTO rooms (name, content)
+                INSERT INTO rooms (name, recent_message)
                 Values (#{name}, "")
             """
     )
@@ -58,11 +58,11 @@ interface RoomMapper {
     @Update(
             """
                 UPDATE rooms
-                SET content=#{content}, created=CURRENT_TIMESTAMP
+                SET recent_message=#{recentMessage}, created=CURRENT_TIMESTAMP
                 WHERE id=#{roomId}
             """
     )
-    fun updateRecentMessage(content: String, roomId: Int): Boolean
+    fun updateRecentMessage(recentMessage: String, roomId: Int): Boolean
 
     @Delete(
             """

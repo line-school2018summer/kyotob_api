@@ -2,7 +2,7 @@
 
 -- Table 1: ルーム情報
 
-INSERT INTO `rooms` (`id`, `name`, `content`) VALUES
+INSERT INTO `rooms` (`id`, `name`, `recent_message`) VALUES
   (1, 'ルームA', 'い'), (2, 'ルームB', 'え'), (3, 'ルームC', 'か');
 
 -- Table 3: ユーザー情報
