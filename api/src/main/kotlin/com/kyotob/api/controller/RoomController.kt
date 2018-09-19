@@ -110,7 +110,8 @@ class RoomController(private val userService: UserService, val roomService: Room
                     @RequestBody request: PostGroupRequest): Room{
         tokenService.verifyAccessToken(token)
         val userIdList: List<Int> = request.userNameList.map {userService.getUser(it.userName).id}
-        roomService.createGroupRoom(request.roomName, userIdList)
+        val id = roomService.createGroupRoom(request.roomName, userIdList)
+        return roomService.getRoomFromRoomId(id)
     }
 
     @PutMapping(

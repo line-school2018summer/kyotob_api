@@ -46,9 +46,9 @@ class RoomService(private val roomMapper: RoomMapper, private val pairMapper: Pa
         val RoomList = pairs.map {
             roomMapper.findByRoomId(it.roomId) ?: throw InternalServerError("pairsとroomsとに整合性がない")
         } +
-                groupRoomIds.map {
+        groupRoomIds.map {
                     roomMapper.findByRoomId(it) ?: throw InternalServerError("groupsとroomsに整合性がない")
-                }
+        }
         return RoomList
     }
 
