@@ -15,7 +15,7 @@ CREATE TABLE `users` (
   `name` varchar(20) NOT NULL UNIQUE,
   `screen_name` varchar(20) NOT NULL,
   `password` char(64) NOT NULL,
-  `user_image` varchar(40) NOT NULL DEFAULT '',
+  `user_image` varchar(40) NOT NULL DEFAULT 'abc.png',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -52,7 +52,7 @@ CREATE TABLE `timer_messages` (
   `sender_id` int NOT NULL,
   `room_id` int NOT NULL,
   `content` varchar(140) NOT NULL,
-  `image_url` varchar(140) NOT NULL,
+  `image_url` varchar(140) NOT NULL DEFAULT 'def.png',
   `kidoku_num` int NOT NULL DEFAULT 0,
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `timer` timestamp NOT NULL,

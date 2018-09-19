@@ -23,12 +23,20 @@ data class PostPairRequest (
 data class GetRoomResponse(
         @JsonProperty("room_id")
         val roomId: Int,
-        @JsonProperty("room_name")
-        val roomName: String,
+        @JsonProperty("room_info")
+        val roomInfo: RoomInfo,
         @JsonProperty("recent_message")
         val recentMessage: String,
         @JsonProperty("created_at")
         val createdAt: Timestamp
+)
+
+// ChatListに表示するルーム情報(名前と画像URL)
+data class RoomInfo(
+        @JsonProperty("room_name")
+        val roomName: String,
+        @JsonProperty("image_url")
+        val imageUrl: String
 )
 
 @RestController
@@ -48,10 +56,10 @@ class RoomController(private val userService: UserService, val roomService: Room
             value = ["/room"]
     )
     fun getAffiliatedRoom(@RequestHeader("access_token") token: String): List<GetRoomResponse> {
-        // 友達の表示名を取得する関数
-        fun getFriendUserScreenName(myUserId: Int, userId1: Int, userId2: Int): String {
+        // 友達の表示名と画像URLを取得する関数
+        fun getFriendUserScreenName(myUserId: Int, userId1: Int, userId2: Int): RoomInfo {
             val friendId = if(myUserId == userId1) userId2 else userId1
-            return userService.getUserFromId(friendId).screenName
+            return userService.getUserFromId(friendId)
         }
         // TokenからUserIdを取得する
         val userId = tokenService.verifyAccessToken(token)

@@ -36,7 +36,8 @@ data class SendTimerMessageRequest(
 data class UserRegister(
         val name: String,
         @JsonProperty("screen_name") val screenName: String,
-        val password: String
+        val password: String,
+        @JsonProperty("image_url") val imageUrl: String
 )
 
 //Userログインのクラス
@@ -53,7 +54,8 @@ data class UserResponse(
 //User検索のクラス
 data class UserSearch(
         val name: String,
-        @JsonProperty("screen_name") val screenName: String
+        @JsonProperty("screen_name") val screenName: String,
+        @JsonProperty("image_url") val imageUrl: String
 )
 
 data class Room(
@@ -65,7 +67,8 @@ data class User(
         val id: Int,
         val name: String,
         val screenName: String,
-        val password: String
+        val password: String,
+        @JsonProperty("image_url") val imageUrl: String
 )
 
 data class Pair(

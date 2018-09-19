@@ -27,13 +27,13 @@ INSERT INTO `messages` (`message_id`, `sender_id`, `room_id`, `content`) VALUES
   (8, 3, 3, 'か');
 
 -- Table 5: 時間差メッセージの情報
-INSERT INTO `timer_messages` (`sender_id`, `room_id`, `content`, `image_url`, `timer`) VALUES
-  (1, 1, 'あ', 'abc.png', now() + interval 1 hour),
-  (2, 1, 'い', 'abc.png', now() - interval 3 hour),
-  (3, 2, 'う', 'abc.png', now() + interval 5 hour),
-  (1, 2, 'え', 'abc.png', now() - interval 1 hour),
-  (2, 3, 'お', 'abc.png', now() + interval 2 hour),
-  (3, 3, 'か', 'abc.png', now() - interval 7 hour);
+INSERT INTO `timer_messages` (`sender_id`, `room_id`, `content`, `timer`) VALUES
+  (1, 1, 'あ', now() + interval 1 hour),
+  (2, 1, 'い', now() - interval 3 hour),
+  (3, 2, 'う', now() + interval 5 hour),
+  (1, 2, 'え', now() - interval 1 hour),
+  (2, 3, 'お', now() + interval 2 hour),
+  (3, 3, 'か', now() - interval 7 hour);
 
 -- トークン
 INSERT INTO `tokens` (`user_id`, `token`) VALUES (1, 'foo'), (2, 'bar'), (3, 'hoge');
