@@ -23,7 +23,8 @@ data class PostPairRequest (
 data class GetRoomResponse(
         @JsonProperty("room_id")
         val roomId: Int,
-        val name: String,
+        @JsonProperty("room_name")
+        val roomName: String,
         @JsonProperty("recent_message")
         val recentMessage: String,
         @JsonProperty("created_at")
