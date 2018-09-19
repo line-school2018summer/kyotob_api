@@ -7,7 +7,7 @@ import com.kyotob.api.model.Room
 import com.fasterxml.jackson.annotation.*
 import com.kyotob.api.mapper.groupMapper
 import com.kyotob.api.service.UserService
-import org.springframework.http.MediaType
+import org.springframework.http.*
 import org.springframework.web.bind.annotation.*
 import kotlin.math.max
 import kotlin.math.min
@@ -75,7 +75,7 @@ class RoomController(private val roomService: RoomService, private val tokenServ
             value = ["/room"]
     )
     fun createGroupRoom(@RequestHeader("access_token") token: String,
-                    @RequestBody request: PostGroupRequest): Unit {
+                    @RequestBody request: PostGroupRequest): Room{
         tokenService.verifyAccessToken(token)
         val userIdList: List<Int> = request.userNameList.map {userService.getUser(it.userName).id}
         roomService.createGroupRoom(request.roomName, userIdList)
@@ -86,11 +86,12 @@ class RoomController(private val roomService: RoomService, private val tokenServ
     )
     fun addMemberToGroup(@RequestHeader("access_token") token: String,
                          @PathVariable("room_id") roomId: Int,
-                         @RequestBody request: PostGroupRequest): Unit {
+                         @RequestBody request: PostGroupRequest): ResponseEntity<HttpStatus> {
         tokenService.verifyAccessToken(token)
         roomService.updateName(roomId,request.roomName)
-        if (request.userNameList.isEmpty()) return
+        if (request.userNameList.isEmpty()) throw BadRequestException("empty list")
         val userIdList = request.userNameList.map {userService.getUser(it.userName).id}
         roomService.appendUsersIntoGroup(roomId, userIdList)
+        return ResponseEntity(HttpStatus.NO_CONTENT)
     }
 }
