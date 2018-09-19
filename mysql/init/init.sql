@@ -45,3 +45,16 @@ CREATE TABLE `tokens` (
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   INDEX(token)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Table 7: 時間指定メッセージの情報を格納するテーブルを作成
+CREATE TABLE `timer_messages` (
+  `message_id` int NOT NULL AUTO_INCREMENT,
+  `sender_id` int NOT NULL,
+  `room_id` int NOT NULL,
+  `content` varchar(140) NOT NULL,
+  `image_url` varchar(140) NOT NULL,
+  `kidoku_num` int NOT NULL DEFAULT 0,
+  `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `timer` timestamp NOT NULL,
+  PRIMARY KEY (`message_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

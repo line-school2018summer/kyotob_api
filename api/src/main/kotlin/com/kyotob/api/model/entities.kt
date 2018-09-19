@@ -16,6 +16,22 @@ data class SendMessageRequest(
         @JsonProperty("content") val content: String
 )
 
+// TimerMessageの取得時に返すResponseの項目
+data class GetTimerMessageResponse(
+        val createdAt: Timestamp,
+        val userName: String,
+        val userScreenName: String,
+        val content: String,
+        val imageUrl: String
+)
+// TimerMessage送信時のRequestの項目
+data class SendTimerMessageRequest(
+        @JsonProperty("content") val content: String,
+        @JsonProperty("image_url") val imageUrl: String,
+        val timer: Int
+)
+
+
 //User登録用のクラス
 data class UserRegister(
         val name: String,
