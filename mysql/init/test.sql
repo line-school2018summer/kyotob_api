@@ -3,7 +3,7 @@
 -- Table 1: ルーム情報
 
 INSERT INTO `rooms` (`id`, `name`, `recent_message`) VALUES
-  (1, 'ルームA', 'い'), (2, 'ルームB', 'え'), (3, 'ルームC', 'か'), (4,'ルームD', null);
+  (1, 'ルームA', 'い'), (2, 'ルームB', 'え'), (3, 'ルームC', 'か'), (4,'ルームD', "");
 
 -- Table 3: ユーザー情報
 INSERT INTO users (`id`, `name`, `screen_name`, `password`) VALUES
