@@ -1,6 +1,5 @@
 package com.kyotob.api.mapper
 import com.kyotob.api.model.GetMessageResponse // メッセージ受信用のモデル
-import com.kyotob.api.model.UserId // user_idを割り出す用のモデル
 import org.apache.ibatis.annotations.Insert
 import org.apache.ibatis.annotations.Mapper
 import org.apache.ibatis.annotations.Select
@@ -26,7 +25,7 @@ interface MessageDAO {
                 FROM users
                 WHERE users.name = #{user_name};
             """
-    )fun getUserId(user_name: String): UserId?
+    )fun getUserId(user_name: String): Int?
     // users.user_idを使って、messageをINSERTする
     @Insert(
             """

@@ -3,6 +3,7 @@ package com.kyotob.api.service
 import com.kyotob.api.controller.BadRequestException
 import com.kyotob.api.controller.Conflict
 import com.kyotob.api.controller.UnauthorizedException
+import com.kyotob.api.controller.InternalServerError
 import com.kyotob.api.controller.NotFound
 import com.kyotob.api.mapper.PairMapper
 import com.kyotob.api.mapper.TokenDao
@@ -37,6 +38,10 @@ class UserService(private val userDao: UserDao, private val tokenDao: TokenDao, 
         val token:String = createNewToken(userDao.getUser(request.name).id)
 
         return UserResponse(token)
+    }
+
+    fun getUserFromId(id: Int): User {
+        return userDao.getUserFromId(id) ?: throw InternalServerError("getUserFromId")
     }
 
     //Userログインをするメソッド
@@ -96,9 +101,16 @@ class UserService(private val userDao: UserDao, private val tokenDao: TokenDao, 
             return pair.userId1
         }
 
-        val id: Int  = userDao.getUser(userName)?.id ?: throw NotFound("User Not Found")
+        val id: Int = userDao.getUser(userName)?.id ?: throw NotFound("User Not Found")
         val pairs = pairMapper.findByUserId(id)
-        val nameList: List<String> = pairs.map { userDao.findUserById(getFriendId(id, it))!!.screenName}
-        return nameList.map{ hashMapOf("friend_screen_name" to it)}
+        val nameList: List<String> = pairs.map { userDao.findUserById(getFriendId(id, it))!!.screenName }
+        return nameList.map { hashMapOf("friend_screen_name" to it) }
+    }
+
+    fun updateScreenName(accessToken: String, name: String, newScreenName: String) {
+        //token確認
+        searchUser(name, accessToken)
+        val user = userDao.getUser(name)
+        userDao.updateScreenName(user.id, newScreenName)
     }
 }

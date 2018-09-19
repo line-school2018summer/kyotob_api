@@ -3,11 +3,12 @@ package com.kyotob.api.service
 import org.springframework.stereotype.Service
 import com.kyotob.api.model.Room
 import com.kyotob.api.model.Pair
-import com.kyotob.api.controller.InternalServerError
 import com.kyotob.api.controller.BadRequestException
+import com.kyotob.api.controller.InternalServerError
 import com.kyotob.api.mapper.RoomMapper
 import com.kyotob.api.mapper.PairMapper
 import com.kyotob.api.mapper.groupMapper
+import com.kyotob.api.model.Rooms
 import kotlin.math.max
 import kotlin.math.min
 
@@ -49,6 +50,10 @@ class RoomService(private val roomMapper: RoomMapper, private val pairMapper: Pa
                     roomMapper.findByRoomId(it) ?: throw InternalServerError("groupsとroomsに整合性がない")
                 }
         return RoomList
+    }
+
+    fun getPairRoomListFromUserId(userId: Int): ArrayList<Rooms> {
+        return pairMapper.findRoomsByUserId(userId)
     }
 
     fun createPairRoom(userId1: Int, userId2: Int, roomName: String): Int {

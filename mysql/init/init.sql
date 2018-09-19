@@ -4,6 +4,8 @@ USE kyotob;
 CREATE TABLE `rooms` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(20) NOT NULL,
+  `recent_message` varchar(140) NOT NULL,
+  `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -13,6 +15,7 @@ CREATE TABLE `users` (
   `name` varchar(20) NOT NULL UNIQUE,
   `screen_name` varchar(20) NOT NULL,
   `password` char(64) NOT NULL,
+  `user_image` varchar(40) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -30,6 +33,7 @@ CREATE TABLE `messages` (
   `sender_id` int NOT NULL,
   `room_id` int NOT NULL,
   `content` varchar(140) NOT NULL,
+  `content_type` varchar(10) NOT NULL DEFAULT "string",
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`message_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

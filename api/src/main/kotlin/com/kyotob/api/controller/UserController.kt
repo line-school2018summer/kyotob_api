@@ -1,5 +1,6 @@
 package com.kyotob.api.controller
 
+import com.fasterxml.jackson.annotation.JsonProperty
 import com.kyotob.api.model.UserRegister //User登録用のモデル
 import com.kyotob.api.model.UserLogin //User認証用のモデル
 import com.kyotob.api.model.UserResponse //Userレスポンス用のモデル
@@ -10,6 +11,10 @@ import com.kyotob.api.service.UserService // User関連のサービス
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
 
+
+data class PutNewNameRequest  (
+        @JsonProperty("new_screen_name")
+        val newName: String)
 
 @RestController
 class UserController(private val userService: UserService){
@@ -48,6 +53,4 @@ class UserController(private val userService: UserService){
             List<HashMap<String, String>> {
         return userService.getFriend(userName)
     }
-
-
 }
