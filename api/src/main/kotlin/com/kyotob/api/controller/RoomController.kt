@@ -12,6 +12,7 @@ import com.kyotob.api.service.UserService
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
 import java.sql.Timestamp
+import java.time.Instant.now
 import kotlin.math.max
 import kotlin.math.min
 
@@ -96,7 +97,8 @@ class RoomController(private val userService: UserService, val roomService: Room
         //ルームが存在するかどうかで挙動が変わる
         if (pair == null) {
             val roomId = roomService.createPairRoom(minId, maxId, roomName)
-            sendNotification(roomId, request.friendUserName)
+            sendNotification(roomId, request.friendUserName) // 友たちにルームが出来たことを通知
+            sendNotification(roomId, userDao.getnameById(userId)) // 自分自身にも通知
             return roomService.getRoomFromRoomId(roomId)
         }
         return roomService.getRoomFromRoomId(pair.roomId)
@@ -106,15 +108,14 @@ class RoomController(private val userService: UserService, val roomService: Room
         for(session in WebSocketServer.sessions) {
             try {
                 if(session.pathParameters["user_name"] == userName) {
-                    val messages: List<GetMessageResponse>? = mdao.findMessages(roomId) // roomのメッセージをすべて取得する
                     // ルームが出来たことを知らせる
                     session.asyncRemote.sendText(
                             jacksonObjectMapper().writeValueAsString(
                                     WebSocketMessage(
-                                            messages!!.last().createdAt,
-                                            messages.last().userScreenName,
+                                            Timestamp(0),
+                                            userName,
                                             roomId,
-                                            messages.last().content
+                                            "新規ルームが出来ました。"
                                     )
                             )
                     )
