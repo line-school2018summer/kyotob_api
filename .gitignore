@@ -1,5 +1,6 @@
 .gradle
 /api/build/
+/api/lib/
 !gradle/wrapper/gradle-wrapper.jar
 
 ### STS ###
