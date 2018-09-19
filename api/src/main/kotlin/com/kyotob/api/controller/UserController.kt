@@ -40,5 +40,14 @@ class UserController(private val userService: UserService){
         return userService.searchUser(userName, token)
     }
 
+    @GetMapping(
+            value = ["user/{user_name}/friends"],
+            produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
+    )
+    fun getFriends(@PathVariable("user_name") userName: String, @RequestHeader("access_token") token: String):
+            List<HashMap<String, String>> {
+        return userService.getFriend(userName)
+    }
+
 
 }

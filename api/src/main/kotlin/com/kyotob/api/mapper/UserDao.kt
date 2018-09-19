@@ -33,6 +33,14 @@ interface UserDao {
             """
     )fun getUser(name: String): User
 
+    @Select (
+            """
+                SELECT id, name, screen_name, password
+                FROM users
+                WHERE id=#{id}
+            """
+    )fun findUserById(id: Int): User?
+
     //idからpasswordを割り出す
     @Select(
             """
