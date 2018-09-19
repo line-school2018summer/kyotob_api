@@ -1,13 +1,14 @@
 package com.kyotob.api.service
 
 import org.springframework.stereotype.Service
-import com.kyotob.api.model.Room
+import com.kyotob.api.model.simpleRoom
 import com.kyotob.api.model.Pair
 import com.kyotob.api.controller.BadRequestException
 import com.kyotob.api.controller.InternalServerError
 import com.kyotob.api.mapper.RoomMapper
 import com.kyotob.api.mapper.PairMapper
 import com.kyotob.api.mapper.groupMapper
+import com.kyotob.api.model.Room
 import com.kyotob.api.model.Rooms
 import kotlin.math.max
 import kotlin.math.min
@@ -16,14 +17,14 @@ import kotlin.math.min
 class RoomService(private val roomMapper: RoomMapper, private val pairMapper: PairMapper, private val groupMapper: groupMapper) {
 
     //テスト用
-    fun getAllRoomList(): ArrayList<Room> {
+    fun getAllRoomList(): ArrayList<simpleRoom> {
         return roomMapper.getAllRooms()
     }
 
-    fun getRoomFromRoomId(roomId: Int): Room {
-        val room: Room? = roomMapper.findByRoomId(roomId)
-        room ?: throw BadRequestException("no room found")
-        return room
+    fun getRoomFromRoomId(roomId: Int): simpleRoom {
+        val simpleRoom: simpleRoom? = roomMapper.findByRoomId(roomId)
+        simpleRoom ?: throw BadRequestException("no room found")
+        return simpleRoom
     }
 
     fun getPairFromRoomId(roomId: Int): Pair? {
@@ -38,7 +39,7 @@ class RoomService(private val roomMapper: RoomMapper, private val pairMapper: Pa
         return pairMapper.findByTwoUserId(userId1, userId2)
     }
 
-    fun getRoomListFromUserId(userId: Int): List<Room> {
+    fun getRoomListFromUserId(userId: Int): List<simpleRoom> {
         val pairs = pairMapper.findByUserId(userId)
         val groupRoomIds = groupMapper.findByUserId(userId)
         //pairsテーブルとroomsテーブルは整合性がなければならない
@@ -52,24 +53,29 @@ class RoomService(private val roomMapper: RoomMapper, private val pairMapper: Pa
         return RoomList
     }
 
-    fun getPairRoomListFromUserId(userId: Int): ArrayList<Rooms> {
+    fun getPairRoomsListFromUserId(userId: Int): ArrayList<Rooms> {
         return pairMapper.findRoomsByUserId(userId)
+    }
+
+    fun getGroupRoomsListFromUserId(userId: Int): List<Room> {
+        val idList = groupMapper.findByUserId(userId)
+        return idList.map {roomMapper.findRoomById(it)!!}
     }
 
     fun createPairRoom(userId1: Int, userId2: Int, roomName: String): Int {
         val minUserId = min(userId1, userId2)
         val maxUserId = max(userId1, userId2)
-        val room: Room = Room(id = -1, name = roomName)
-        roomMapper.create(room)
-        val roomId = room.id
+        val simpleRoom: simpleRoom = simpleRoom(id = -1, name = roomName)
+        roomMapper.create(simpleRoom)
+        val roomId = simpleRoom.id
         pairMapper.create(roomId, minUserId, maxUserId)
         return roomId
     }
 
     fun createGroupRoom(roomName: String, userIdList: List<Int>) : Int {
-        val room: Room = Room(id = -1, name = roomName)
-        roomMapper.create(room)
-        val roomId = room.id
+        val simpleRoom: simpleRoom = simpleRoom(id = -1, name = roomName)
+        roomMapper.create(simpleRoom)
+        val roomId = simpleRoom.id
         userIdList.distinct().map {groupMapper.insertUsersRooms(it, roomId)}
         return roomId
     }

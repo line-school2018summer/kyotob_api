@@ -48,7 +48,7 @@ class RoomController(private val userService: UserService, val roomService: Room
     @GetMapping(
             value = ["/room/all"]
     )
-    fun getAllRoom(): ArrayList<Room> {
+    fun getAllRoom(): ArrayList<simpleRoom> {
         return roomService.getAllRoomList()
     }
 
@@ -65,17 +65,29 @@ class RoomController(private val userService: UserService, val roomService: Room
         // TokenからUserIdを取得する
         val userId = tokenService.verifyAccessToken(token)
         // UserIdからRoom一覧を取得する
-        val rooms = roomService.getPairRoomListFromUserId(userId)
+        val pairRooms = roomService.getPairRoomsListFromUserId(userId)
+
+        val groupRooms = roomService.getGroupRoomsListFromUserId(userId)
+
         //todo: group
         // Response用に整形する
-        return rooms.map {
+        val response: List<GetRoomResponse> = pairRooms.map {
             GetRoomResponse(
                     it.roomId,
                     getFriendUserScreenName(userId, it.userId1, it.userId2),
                     it.recentMessage,
                     it.createdAt
             )
+        } + groupRooms.map {
+            GetRoomResponse(
+                    it.id,
+                    it.name,
+                    it.recentMessage,
+                    it.createdAt
+            )
         }
+
+        return response
     }
 
     //一対一ルーム取得
@@ -83,7 +95,7 @@ class RoomController(private val userService: UserService, val roomService: Room
             value = ["/room/pair"]
     )
     fun getPairRoom(@RequestHeader("access_token") token: String,
-                     @RequestBody request: UserNameRequest): Room {
+                     @RequestBody request: UserNameRequest): simpleRoom {
         val userId = tokenService.verifyAccessToken(token)
         //friendNameから友達のIDを取得
         val friendId = userService.getUser(request.userName).id
@@ -107,7 +119,7 @@ class RoomController(private val userService: UserService, val roomService: Room
             value = ["/room"]
     )
     fun createGroupRoom(@RequestHeader("access_token") token: String,
-                    @RequestBody request: PostGroupRequest): Room{
+                    @RequestBody request: PostGroupRequest): simpleRoom{
         tokenService.verifyAccessToken(token)
         val userIdList: List<Int> = request.userNameList.map {userService.getUser(it.userName).id}
         val id = roomService.createGroupRoom(request.roomName, userIdList)

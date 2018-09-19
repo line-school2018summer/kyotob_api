@@ -1,6 +1,7 @@
 package com.kyotob.api.mapper
 
 import com.kyotob.api.model.Room
+import com.kyotob.api.model.simpleRoom
 import org.apache.ibatis.annotations.*
 import org.springframework.stereotype.Component
 
@@ -14,7 +15,16 @@ interface RoomMapper {
                 FROM rooms
             """
     )
-    fun getAllRooms(): ArrayList<Room>
+    fun getAllRooms(): ArrayList<simpleRoom>
+
+    @Select(
+            """
+                SELECT id, name, recent_message, created
+                FROM rooms
+                WHERE id = #{id};
+            """
+    )
+    fun findRoomById(id: Int): Room?
 
     @Select(
             """
@@ -23,7 +33,7 @@ interface RoomMapper {
                 WHERE id=#{roomId}
             """
     )
-    fun findByRoomId(roomId: Int): Room?
+    fun findByRoomId(roomId: Int): simpleRoom?
 
     @Select(
             """
@@ -32,7 +42,7 @@ interface RoomMapper {
                 WHERE name=#{roomName}
             """
     )
-    fun findByRoomName(roomName: String): Room?
+    fun findByRoomName(roomName: String): simpleRoom?
 
     @Insert(
             """
@@ -44,7 +54,7 @@ interface RoomMapper {
             statement = ["SELECT @@IDENTITY"], keyProperty = "id",
             before = false, resultType = Int::class
     )
-    fun create(insertRoom: Room): Unit
+    fun create(insertSimpleRoom: simpleRoom): Unit
 
     @Update(
             """
