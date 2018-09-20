@@ -25,10 +25,16 @@ class ImageController() {
     val BASEPATH = "/tmp/"
 
 
+    data class FileUploadResponse(
+            val path: String
+    )
+
     // 画像のアップロード
     // Imageを取得し、urlを返す
     @PostMapping(value = ["/image/upload"])
-    fun upfile(@RequestParam("file") file: MultipartFile): String {
+    fun upfile(@RequestParam("file") file: MultipartFile): FileUploadResponse  {
+
+
         // 空のファイルが投げられたとき
         if (file.isEmpty){
             throw BadRequestException("Empty File")
@@ -54,7 +60,7 @@ class ImageController() {
             throw BadRequestException("Fail to Save")
         }
 
-        return fileName
+        return FileUploadResponse(fileName)
     }
 
     // 画像のダウンロード
