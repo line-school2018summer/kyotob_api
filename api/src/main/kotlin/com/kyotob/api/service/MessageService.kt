@@ -5,10 +5,11 @@ import com.kyotob.api.WebSocketServer.Companion.sessions
 import com.kyotob.api.mapper.MessageDAO // Message関連のMapper
 import com.kyotob.api.mapper.RoomMapper
 import com.kyotob.api.mapper.TokenDao // Token関連のMapper
+import com.kyotob.api.mapper.UserDao
 import com.kyotob.api.model.*
 import org.springframework.stereotype.Service
 @Service
-class MessageService(private val mdao: MessageDAO, private val tdao: TokenDao, private val roomMapper: RoomMapper) {
+class MessageService(private val mdao: MessageDAO, private val tdao: TokenDao, private val roomMapper: RoomMapper, private val udao: UserDao) {
     // 認証時に呼ぶメソッド
     fun auth(roomId: Int, token: String): Int {
         // Tokenから情報を取得する
@@ -31,20 +32,20 @@ class MessageService(private val mdao: MessageDAO, private val tdao: TokenDao, p
     // メッセージ送信時に呼ぶメソッド
     fun sendMessage(request: SendMessageRequest, roomId: Int, userIdByToken: Int): Boolean {
         // Messageを追加する
-        mdao.insertMessage(userIdByToken, roomId, request.content)
+        mdao.insertMessage(userIdByToken, roomId, request.content, request.contentType)
 
         // RoomテーブルのRecentMessageを更新する
         roomMapper.updateRecentMessage(request.content, roomId)
 
         //WebSocketを使って、メッセージの新着を知らせる
-        sendNotification(request, roomId)
+        sendNotification(udao.getnameById(userIdByToken), roomId)
         return true
     }
 
-    fun sendNotification(request: SendMessageRequest, roomId: Int) {
+    fun sendNotification(userName: String, roomId: Int) {
         for(session in WebSocketServer.sessions) {
             try {
-                if(session.pathParameters["user_name"] == request.userName) {
+                if(session.pathParameters["user_name"] == userName) {
                     val messages: List<GetMessageResponse>? = mdao.findMessages(roomId) // roomのメッセージをすべて取得する
                     // 新着メッセージを知らせる
                     session.asyncRemote.sendText(

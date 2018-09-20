@@ -34,7 +34,7 @@ class ImageController() {
             throw BadRequestException("Empty File")
         }
         // タイムスタンプを作る
-        val df = SimpleDateFormat("yyyy:MM:dd:HH:mm:ss") // 時間のフォーマットを指定
+        val df = SimpleDateFormat("yyyyMMddHHmmss") // 時間のフォーマットを指定
         val  date = Date(System.currentTimeMillis()) // 現在時刻を取得
 
         // スラッシュとかをなくすためにハッシュ化

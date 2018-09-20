@@ -15,7 +15,7 @@ CREATE TABLE `users` (
   `name` varchar(20) NOT NULL UNIQUE,
   `screen_name` varchar(20) NOT NULL,
   `password` char(64) NOT NULL,
-  `user_image` varchar(40) NOT NULL DEFAULT '',
+  `user_image` varchar(40) NOT NULL DEFAULT 'abc.png',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -44,4 +44,24 @@ CREATE TABLE `tokens` (
   `token` varchar(200) NOT NULL,
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   INDEX(token)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Table 7: 時間指定メッセージの情報を格納するテーブルを作成
+CREATE TABLE `timer_messages` (
+  `message_id` int NOT NULL AUTO_INCREMENT,
+  `sender_id` int NOT NULL,
+  `room_id` int NOT NULL,
+  `content` varchar(140) NOT NULL,
+  `image_url` varchar(140) NOT NULL DEFAULT 'def.png',
+  `kidoku_num` int NOT NULL DEFAULT 0,
+  `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `timer` timestamp NOT NULL,
+  PRIMARY KEY (`message_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Table 8: グループルーム情報を格納するテーブルを作成
+CREATE TABLE `users_rooms` (
+  `room_id` int NOT NULL,
+  `user_id` int NOT NULL,
+  unique(`room_id`,`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

@@ -7,8 +7,10 @@ import com.kyotob.api.model.UserResponse //Userレスポンス用のモデル
 import com.kyotob.api.model.UserSearch //User検索ようのモデル
 
 import com.kyotob.api.service.UserService // User関連のサービス
+import org.springframework.http.HttpStatus
 
 import org.springframework.http.MediaType
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 
@@ -43,9 +45,21 @@ class UserController(private val userService: UserService){
     )
     fun searchuser(@PathVariable("user_name") userName: String, @RequestHeader("access_token") token:String): UserSearch{
         return userService.searchUser(userName, token)
-  }
+    }
 
-    @PutMapping( value = ["user/{user_name}"], produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)] ) fun putUser(@PathVariable("user_name") userName: String, @RequestHeader("access_token") token: String, @RequestBody request: PutNewNameRequest): Unit {
+    @PutMapping( value = ["user/{user_name}"], produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)] )
+    fun putUser(@PathVariable("user_name") userName: String, @RequestHeader("access_token") token: String, @RequestBody request: PutNewNameRequest): ResponseEntity<String> {
         userService.updateScreenName(token, userName, request.newName)
+        val status = HttpStatus.NO_CONTENT
+        return ResponseEntity(status)
+    }
+
+    @GetMapping(
+            value = ["user/{user_name}/friends"],
+            produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
+    )
+    fun getFriends(@PathVariable("user_name") userName: String, @RequestHeader("access_token") token: String):
+            List<HashMap<String, String>> {
+        return userService.getFriend(userName)
     }
 }

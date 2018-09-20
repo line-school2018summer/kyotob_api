@@ -4,23 +4,41 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import java.sql.Timestamp
 // Messageの取得時に返すResponseの項目
 data class GetMessageResponse(
-        val createdAt: Timestamp,
-        val userName: String,
-        val userScreenName: String,
-        val content: String
+        @JsonProperty("created_at") val createdAt: Timestamp,
+        @JsonProperty("user_name") val userName: String,
+        @JsonProperty("user_screen_name") val userScreenName: String,
+        @JsonProperty("content") val content: String,
+        @JsonProperty("content_type") val contentType: String
 )
 // Message送信時のRequestの項目
 // Tokenで認証するので、user_nameが無くても誰か分かるんですが、あったほうが、Messageに追加しやすいので付けてます。
 data class SendMessageRequest(
-        @JsonProperty("user_name") val userName: String, // クライアント側で対応させれば消していい
-        @JsonProperty("content") val content: String
+        @JsonProperty("content") val content: String,
+        @JsonProperty("content_type") val contentType: String
 )
+
+// TimerMessageの取得時に返すResponseの項目
+data class GetTimerMessageResponse(
+        val createdAt: Timestamp,
+        val userName: String,
+        val userScreenName: String,
+        val content: String,
+        val imageUrl: String
+)
+// TimerMessage送信時のRequestの項目
+data class SendTimerMessageRequest(
+        @JsonProperty("content") val content: String,
+        @JsonProperty("image_url") val imageUrl: String,
+        val timer: Int
+)
+
 
 //User登録用のクラス
 data class UserRegister(
         val name: String,
         @JsonProperty("screen_name") val screenName: String,
-        val password: String
+        val password: String,
+        @JsonProperty("image_url") val imageUrl: String
 )
 
 //Userログインのクラス
@@ -37,19 +55,28 @@ data class UserResponse(
 //User検索のクラス
 data class UserSearch(
         val name: String,
-        @JsonProperty("screen_name") val screenName: String
+        @JsonProperty("screen_name") val screenName: String,
+        @JsonProperty("image_url") val imageUrl: String
+)
+
+data class simpleRoom(
+        val id: Int,
+        val name: String
 )
 
 data class Room(
         val id: Int,
-        val name: String
+        val name: String,
+        val recentMessage: String,
+        @get:JsonProperty("created_at") var createdAt: Timestamp
 )
 
 data class User(
         val id: Int,
         val name: String,
         val screenName: String,
-        val password: String
+        val password: String,
+        @JsonProperty("image_url") val imageUrl: String
 )
 
 data class Pair(
@@ -72,6 +99,11 @@ data class Message(
         @get:JsonProperty("created_at") val createdAt: Timestamp
 )
 
+data class UsersRooms(
+        val roomId: Int,
+        val userId: Int
+)
+
 data class Rooms(
         val roomId: Int,
         val userId1: Int,
@@ -87,3 +119,4 @@ data class WebSocketMessage(
         val roomId: Int,
         val content: String
 )
+
