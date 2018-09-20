@@ -36,7 +36,7 @@ interface UserDao {
 
     @Select (
             """
-                SELECT id, name, screen_name, password
+                SELECT id, name, screen_name, password, user_image
                 FROM users
                 WHERE id=#{id}
             """
