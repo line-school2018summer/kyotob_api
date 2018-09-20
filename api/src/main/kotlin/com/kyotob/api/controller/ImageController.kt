@@ -22,8 +22,9 @@ import kotlin.text.Charsets.UTF_8
 
 @RestController
 class ImageController() {
-    val BASEPATH = "/tmp/"
+//    val BASEPATH = "/tmp/"
 
+    val BASEPATH = "/home/ec2-user/images/"
 
     data class FileUploadResponse(
             val path: String

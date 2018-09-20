@@ -13,7 +13,7 @@ fun main(args: Array<String>) {
     runApplication<ApiApplication>(*args)
 
     // Tyrus Websocket Serverの起動
-    val server = Server("localhost", 8181,
+    val server = Server("localhost", 443,
             "" ,mapOf(), WebSocketServer::class.java)
     try {
         server.start()
