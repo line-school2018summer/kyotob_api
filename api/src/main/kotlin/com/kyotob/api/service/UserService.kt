@@ -33,11 +33,11 @@ class UserService(private val userDao: UserDao, private val tokenDao: TokenDao, 
         //tokenを取得しtokensに(id, token)の組を格納
         val token:String = createNewToken(userDao.getUser(request.name).id)
 
-        return UserResponse(token)
+        return UserResponse(request.screenName, token)
     }
 
-    fun getUserFromId(id: Int): RoomInfo {
-        return userDao.getUserFromId(id) ?: throw InternalServerError("getUserFromId")
+    fun getUserFromId(id: Int): User {
+        return userDao.findUserById(id) ?: throw InternalServerError("getUserFromId")
     }
 
     //Userログインをするメソッド
@@ -59,7 +59,8 @@ class UserService(private val userDao: UserDao, private val tokenDao: TokenDao, 
             else{
                 //passwordがが合っている場合は新規発行のtokenを返す
                 val token:String = createNewToken(userDao.getUser(request.name).id)
-                return UserResponse(token)
+                val user = userDao.getUser(request.name)
+                return UserResponse(user.screenName, token)
             }
         }
     }

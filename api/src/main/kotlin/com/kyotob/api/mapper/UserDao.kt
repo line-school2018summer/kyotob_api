@@ -1,6 +1,5 @@
 package com.kyotob.api.mapper
 
-import com.kyotob.api.controller.RoomInfo
 import org.apache.ibatis.annotations.*
 import com.kyotob.api.model.User
 import org.springframework.stereotype.Component
@@ -42,14 +41,6 @@ interface UserDao {
             """
     )fun findUserById(id: Int): User?
 
-    // Room一覧の表示名と画像URLを取得するSQL
-    @Select(
-            """
-                SELECT screen_name, user_image
-                From users
-                WHERE id=#{id}
-            """
-    )fun getUserFromId(id: Int): RoomInfo?
 
     @Select(
             """

@@ -38,7 +38,7 @@ data class UserRegister(
         val name: String,
         @JsonProperty("screen_name") val screenName: String,
         val password: String,
-        @JsonProperty("image_url") val imageUrl: String
+        @JsonProperty("image_url") val imageUrl: String = "abc.jpeg"
 )
 
 //Userログインのクラス
@@ -49,6 +49,8 @@ data class UserLogin(
 
 //User登録のResponseでTokenを返すためのクラス
 data class UserResponse(
+        @JsonProperty("screen_name")
+        val screenName: String,
         val token: String
 )
 

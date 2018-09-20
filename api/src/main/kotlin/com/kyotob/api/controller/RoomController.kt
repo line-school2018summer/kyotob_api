@@ -25,21 +25,16 @@ data class UserNameRequest(
 data class GetRoomResponse(
         @JsonProperty("room_id")
         val roomId: Int,
-        @JsonProperty("room_info")
-        val roomInfo: RoomInfo,
+        @JsonProperty("room_name")
+        val roomName: String,
+        @JsonProperty("image_url")
+        val imageUrl: String,
         @JsonProperty("recent_message")
         val recentMessage: String,
         @JsonProperty("created_at")
         val createdAt: Timestamp
 )
 
-// ChatListに表示するルーム情報(名前と画像URL)
-data class RoomInfo(
-        @JsonProperty("room_name")
-        val roomName: String,
-        @JsonProperty("image_url")
-        val imageUrl: String
-)
 
 data class PostGroupRequest (
         @JsonProperty("room_name")
@@ -59,7 +54,7 @@ class RoomController(private val userService: UserService, val roomService: Room
     )
     fun getAffiliatedRoom(@RequestHeader("access_token") token: String): List<GetRoomResponse> {
         // 友達の表示名を取得する関数
-        fun getFriendUserScreenName(myUserId: Int, userId1: Int, userId2: Int): RoomInfo {
+        fun getFriendUserScreenName(myUserId: Int, userId1: Int, userId2: Int): User {
             val friendId = if(myUserId == userId1) userId2 else userId1
             return userService.getUserFromId(friendId)
         }
@@ -73,14 +68,16 @@ class RoomController(private val userService: UserService, val roomService: Room
         return rooms.map {
             GetRoomResponse(
                     it.roomId,
-                    getFriendUserScreenName(userId, it.userId1, it.userId2),
+                    getFriendUserScreenName(userId, it.userId1, it.userId2).screenName,
+                    getFriendUserScreenName(userId, it.userId1, it.userId2).imageUrl,
                     it.recentMessage,
                     it.createdAt
             )
         } + groupRooms.map {
             GetRoomResponse(
                     it.id,
-                    RoomInfo(it.name, "abc.png"),
+                    it.name,
+                    "abc.jpeg",
                     it.recentMessage,
                     it.createdAt
             )
