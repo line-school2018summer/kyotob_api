@@ -8,7 +8,7 @@ interface MessageDAO {
     // Message取得用のSQL文
     @Select(
             """
-                SELECT messages.created, users.name, users.screen_name, messages.content
+                SELECT messages.created, users.name, users.screen_name, messages.content, messages.content_type
                 FROM messages
                 LEFT JOIN users ON messages.sender_id = users.id
                 WHERE messages.room_id = #{roomId};
@@ -26,9 +26,9 @@ interface MessageDAO {
     // users.user_idを使って、messageをINSERTする
     @Insert(
             """
-                INSERT INTO messages(sender_id, room_id, content) VALUES(#{userId}, #{roomId}, #{content});
+                INSERT INTO messages(sender_id, room_id, content, content_type) VALUES(#{userId}, #{roomId}, #{content}, #{contentType});
             """
-    )fun insertMessage(userId: Int, roomId: Int, content: String)
+    )fun insertMessage(userId: Int, roomId: Int, content: String, contentType: String)
 
     // roomにuserが存在するかを確認する
     @Select(
