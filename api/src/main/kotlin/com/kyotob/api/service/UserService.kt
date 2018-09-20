@@ -103,8 +103,8 @@ class UserService(private val userDao: UserDao, private val tokenDao: TokenDao, 
 
         val id: Int = userDao.getUser(userName)?.id ?: throw NotFound("User Not Found")
         val pairs = pairMapper.findByUserId(id)
-        val nameList: List<String> = pairs.map { userDao.findUserById(getFriendId(id, it))!!.screenName }
-        return nameList.map { hashMapOf("friend_screen_name" to it) }
+        val friendList: List<User> = pairs.map { userDao.findUserById(getFriendId(id, it))!! }
+        return friendList.map { hashMapOf("friend_screen_name" to it.screenName, "friend_name" to it.name) }
     }
 
     fun updateScreenName(accessToken: String, name: String, newScreenName: String) {
