@@ -40,6 +40,16 @@ interface PairMapper {
             """
                 SELECT room_id, user_id_1, user_id_2
                 FROM pairs
+                WHERE user_id_1=#{userId} OR user_id_2=#{userId}
+            """
+    )
+    fun findByUserId(userId: Int): ArrayList<Pair>
+
+
+    @Select(
+            """
+                SELECT room_id, user_id_1, user_id_2
+                FROM pairs
                 WHERE user_id_1=#{userId1} AND user_id_2=#{userId2}
             """
     )

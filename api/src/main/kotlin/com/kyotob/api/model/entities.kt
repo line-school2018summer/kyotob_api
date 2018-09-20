@@ -59,9 +59,16 @@ data class UserSearch(
         @JsonProperty("image_url") val imageUrl: String
 )
 
-data class Room(
+data class simpleRoom(
         val id: Int,
         val name: String
+)
+
+data class Room(
+        val id: Int,
+        val name: String,
+        val recentMessage: String,
+        @get:JsonProperty("created_at") var createdAt: Timestamp
 )
 
 data class User(
@@ -92,6 +99,11 @@ data class Message(
         @get:JsonProperty("created_at") val createdAt: Timestamp
 )
 
+data class UsersRooms(
+        val roomId: Int,
+        val userId: Int
+)
+
 data class Rooms(
         val roomId: Int,
         val userId1: Int,
@@ -107,3 +119,4 @@ data class WebSocketMessage(
         val roomId: Int,
         val content: String
 )
+

@@ -3,6 +3,9 @@ import com.kyotob.api.model.GetMessageResponse // メッセージ受信用のモ
 import org.apache.ibatis.annotations.Insert
 import org.apache.ibatis.annotations.Mapper
 import org.apache.ibatis.annotations.Select
+import org.springframework.stereotype.Component
+
+@Component
 @Mapper
 interface MessageDAO {
     // Message取得用のSQL文

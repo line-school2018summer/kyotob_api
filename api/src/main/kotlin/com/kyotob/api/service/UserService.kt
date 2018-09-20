@@ -1,8 +1,10 @@
 package com.kyotob.api.service
 
 import com.kyotob.api.controller.*
+import com.kyotob.api.mapper.PairMapper
 import com.kyotob.api.mapper.TokenDao
 import com.kyotob.api.mapper.UserDao
+import com.kyotob.api.model.Pair
 import com.kyotob.api.model.UserLogin
 import com.kyotob.api.model.UserRegister
 import com.kyotob.api.model.UserResponse
@@ -11,9 +13,10 @@ import com.kyotob.api.model.User
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 import java.util.*
+import kotlin.collections.HashMap
 
 @Service
-class UserService(private val userDao: UserDao, private val tokenDao: TokenDao){
+class UserService(private val userDao: UserDao, private val tokenDao: TokenDao, private val pairMapper: PairMapper){
     //User登録をするメソッド
     fun createUser(request: UserRegister): UserResponse{
         //Userが既に登録されていればErrorを返す。
@@ -82,6 +85,22 @@ class UserService(private val userDao: UserDao, private val tokenDao: TokenDao){
         val token: String = UUID.randomUUID().toString()  //新たにtokenを得る
         tokenDao.upsert(userId, token)  //tokensに格納
         return token
+    }
+
+    fun getUser(userName: String): User {
+        return userDao.getUser(userName)
+    }
+
+    fun getFriend(userName: String): List<HashMap<String, String>> {
+        fun getFriendId(myId: Int, pair: Pair): Int {
+            if (pair.userId1 == myId) return pair.userId2
+            return pair.userId1
+        }
+
+        val id: Int = userDao.getUser(userName).id
+        val pairs: ArrayList<Pair> = pairMapper.findByUserId(id)
+        val friendList: List<User> = pairs.map {  userDao.findUserById(getFriendId(id, it))!! }
+        return friendList.map { hashMapOf("friend_screen_name" to it.screenName, "friend_name" to it.name) }
     }
 
     fun updateScreenName(accessToken: String, name: String, newScreenName: String) {

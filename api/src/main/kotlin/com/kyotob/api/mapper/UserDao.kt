@@ -34,6 +34,14 @@ interface UserDao {
             """
     )fun getUser(name: String): User
 
+    @Select (
+            """
+                SELECT id, name, screen_name, password
+                FROM users
+                WHERE id=#{id}
+            """
+    )fun findUserById(id: Int): User?
+
     // Room一覧の表示名と画像URLを取得するSQL
     @Select(
             """
