@@ -2,14 +2,11 @@ package com.kyotob.api.service
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.kyotob.api.WebSocketServer
 import com.kyotob.api.WebSocketServer.Companion.sessions
-import com.kyotob.api.mapper.MessageDAO // Message関連のMapper
-import com.kyotob.api.mapper.RoomMapper
-import com.kyotob.api.mapper.TokenDao // Token関連のMapper
-import com.kyotob.api.mapper.UserDao
+import com.kyotob.api.mapper.*
 import com.kyotob.api.model.*
 import org.springframework.stereotype.Service
 @Service
-class MessageService(private val mdao: MessageDAO, private val tdao: TokenDao, private val roomMapper: RoomMapper, private val udao: UserDao) {
+class MessageService(private val mdao: MessageDAO, private val tdao: TokenDao, private val roomMapper: RoomMapper, private val udao: UserDao, private val pairMapper: PairMapper) {
     // 認証時に呼ぶメソッド
     fun auth(roomId: Int, token: String): Int {
         // Tokenから情報を取得する
@@ -38,7 +35,8 @@ class MessageService(private val mdao: MessageDAO, private val tdao: TokenDao, p
         roomMapper.updateRecentMessage(request.content, roomId)
 
         //WebSocketを使って、メッセージの新着を知らせる
-        sendNotification(udao.getnameById(userIdByToken), roomId)
+        sendNotification(udao.getnameById(pairMapper.findByRoomId(roomId)!!.userId1), roomId) // 送信者に通知を送る
+        sendNotification(udao.getnameById(pairMapper.findByRoomId(roomId)!!.userId2), roomId) // 受信者に通知を送る
         return true
     }
 
