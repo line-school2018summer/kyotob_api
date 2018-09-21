@@ -104,10 +104,11 @@ class UserService(private val userDao: UserDao, private val tokenDao: TokenDao, 
         return friendList.map { hashMapOf("friend_screen_name" to it.screenName, "friend_name" to it.name) }
     }
 
-    fun updateScreenName(accessToken: String, name: String, newScreenName: String) {
+    fun updateUser(accessToken: String, name: String, newScreenName: String, newIconPath: String) {
         //token確認
         searchUser(name, accessToken)
         val user = userDao.getUser(name)
         userDao.updateScreenName(user.id, newScreenName)
+        userDao.updateIconPath(user.id, newIconPath)
     }
 }
