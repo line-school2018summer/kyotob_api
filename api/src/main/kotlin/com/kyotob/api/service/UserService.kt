@@ -33,7 +33,7 @@ class UserService(private val userDao: UserDao, private val tokenDao: TokenDao, 
         //tokenを取得しtokensに(id, token)の組を格納
         val token:String = createNewToken(userDao.getUser(request.name).id)
 
-        return UserResponse(request.screenName, token)
+        return UserResponse(request.screenName, token, request.imageUrl)
     }
 
     fun getUserFromId(id: Int): User {
@@ -60,7 +60,7 @@ class UserService(private val userDao: UserDao, private val tokenDao: TokenDao, 
                 //passwordがが合っている場合は新規発行のtokenを返す
                 val token:String = createNewToken(userDao.getUser(request.name).id)
                 val user = userDao.getUser(request.name)
-                return UserResponse(user.screenName, token)
+                return UserResponse(user.screenName, token, user.imageUrl)
             }
         }
     }

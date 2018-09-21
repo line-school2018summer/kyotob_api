@@ -51,7 +51,9 @@ data class UserLogin(
 data class UserResponse(
         @JsonProperty("screen_name")
         val screenName: String,
-        val token: String
+        val token: String,
+        @JsonProperty("image_url")
+        val imageUrl: String
 )
 
 //User検索のクラス
