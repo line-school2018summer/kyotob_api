@@ -2,6 +2,8 @@ package com.kyotob.api.model
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import java.sql.Timestamp
+import java.time.LocalDateTime
+
 // Messageの取得時に返すResponseの項目
 data class GetMessageResponse(
         @JsonProperty("created_at") val createdAt: Timestamp,
@@ -71,8 +73,9 @@ data class simpleRoom(
 data class Room(
         val id: Int,
         val name: String,
-        val recentMessage: String,
-        @get:JsonProperty("created_at") var createdAt: Timestamp
+        val recentMessage: String = "",
+        @get:JsonProperty("created_at") var createdAt: Timestamp = Timestamp.valueOf(LocalDateTime.MAX),
+        @JsonProperty("image_url") val imageUrl: String = "abc.png"
 )
 
 data class User(

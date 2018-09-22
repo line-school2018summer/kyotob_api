@@ -46,15 +46,15 @@ interface RoomMapper {
 
     @Insert(
             """
-                INSERT INTO rooms (name, recent_message)
-                Values (#{name}, "")
+                INSERT INTO rooms (name, recent_message, image_url)
+                Values (#{name}, "", #{imageUrl})
             """
     )
     @SelectKey(
             statement = ["SELECT @@IDENTITY"], keyProperty = "id",
             before = false, resultType = Int::class
     )
-    fun create(insertSimpleRoom: simpleRoom): Unit
+    fun create(insertRoom: Room): Unit
 
     @Update(
             """

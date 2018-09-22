@@ -40,7 +40,9 @@ data class PostGroupRequest (
         @JsonProperty("room_name")
         val roomName: String,
         @JsonProperty("user_name_list")
-        val userNameList: List<UserNameRequest>
+        val userNameList: List<UserNameRequest>,
+        @JsonProperty("icon_path")
+        val iconPath: String
 )
 
 
@@ -117,7 +119,7 @@ class RoomController(private val userService: UserService, val roomService: Room
                     @RequestBody request: PostGroupRequest): simpleRoom{
         tokenService.verifyAccessToken(token)
         val userIdList: List<Int> = request.userNameList.map {userService.getUser(it.userName).id}
-        val id = roomService.createGroupRoom(request.roomName, userIdList)
+        val id = roomService.createGroupRoom(request.roomName, userIdList, request.iconPath)
         return roomService.getRoomFromRoomId(id)
     }
 
