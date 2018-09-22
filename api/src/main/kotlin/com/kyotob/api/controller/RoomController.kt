@@ -79,7 +79,7 @@ class RoomController(private val userService: UserService, val roomService: Room
             GetRoomResponse(
                     it.id,
                     it.name,
-                    "abc.jpeg",
+                    it.imageUrl,
                     it.recentMessage,
                     it.createdAt
             )
