@@ -19,7 +19,7 @@ interface RoomMapper {
 
     @Select(
             """
-                SELECT id, name, recent_message, created
+                SELECT id, name, recent_message, created, image_url
                 FROM rooms
                 WHERE id = #{id};
             """
