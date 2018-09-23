@@ -1,6 +1,5 @@
 package com.kyotob.api.mapper
 
-import com.kyotob.api.model.UsersRooms
 import org.apache.ibatis.annotations.Insert
 import org.apache.ibatis.annotations.Mapper
 import org.apache.ibatis.annotations.Select
