@@ -1,10 +1,10 @@
 package com.kyotob.api.service
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.kyotob.api.WebSocketServer
-import com.kyotob.api.WebSocketServer.Companion.sessions
 import com.kyotob.api.mapper.*
 import com.kyotob.api.model.*
 import org.springframework.stereotype.Service
+
 @Service
 class MessageService(private val mdao: MessageDAO, private val tdao: TokenDao, private val roomMapper: RoomMapper, private val udao: UserDao, private val pairMapper: PairMapper) {
     // 認証時に呼ぶメソッド
@@ -21,11 +21,11 @@ class MessageService(private val mdao: MessageDAO, private val tdao: TokenDao, p
             return -1
         }
     }
-    // メッセージ取得時に呼ぶメソッド
-    fun getMessageList(roomId: Int): List<GetMessageResponse>? {
-        // メッセージ取得
-        return mdao.findMessages(roomId)
-    }
+
+    // メッセージ取得
+    fun getMessageList(roomId: Int): List<GetMessageResponse>? =
+            mdao.findMessages(roomId)
+
     // メッセージ送信時に呼ぶメソッド
     fun sendMessage(request: SendMessageRequest, roomId: Int, userIdByToken: Int): Boolean {
         // Messageを追加する
@@ -35,8 +35,8 @@ class MessageService(private val mdao: MessageDAO, private val tdao: TokenDao, p
         roomMapper.updateRecentMessage(request.content, roomId)
 
         //WebSocketを使って、メッセージの新着を知らせる
-        sendNotification(udao.getnameById(pairMapper.findByRoomId(roomId)!!.userId1), roomId) // 送信者に通知を送る
-        sendNotification(udao.getnameById(pairMapper.findByRoomId(roomId)!!.userId2), roomId) // 受信者に通知を送る
+        sendNotification(udao.getNameById(pairMapper.findByRoomId(roomId)!!.userId1), roomId) // 送信者に通知を送る
+        sendNotification(udao.getNameById(pairMapper.findByRoomId(roomId)!!.userId2), roomId) // 受信者に通知を送る
         return true
     }
 

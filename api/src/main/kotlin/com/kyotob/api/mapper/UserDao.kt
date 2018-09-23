@@ -8,30 +8,30 @@ import org.springframework.stereotype.Component
 @Mapper
 interface UserDao {
 
-    //userを新しく追加する
+    // user を新しく追加する
     @Insert(
             """
                 INSERT INTO users
                 (name, screen_name, password, user_image)
                 VALUES (#{name},#{screenName}, #{password}, #{userImage});
             """
-    )fun insertUser(name: String, screenName: String, password: String, userImage: String)
+    ) fun insertUser(name: String, screenName: String, password: String, userImage: String)
 
-    //nameでuserの存在を判定
+    // name で user の存在を判定
     @Select(
             """
                 SELECT EXISTS(SELECT 1 FROM users WHERE name=#{name})
             """
-    )fun isNameRegistered(name: String): Boolean
+    ) fun isNameRegistered(name: String): Boolean
 
-    //nameからuserの情報を取得
+    // name から user の情報を取得
     @Select(
             """
                 SELECT id, name, screen_name, password, user_image
                 FROM users
                 WHERE name=#{name}
             """
-    )fun getUser(name: String): User
+    ) fun getUser(name: String): User
 
     @Select (
             """
@@ -39,7 +39,7 @@ interface UserDao {
                 FROM users
                 WHERE id=#{id}
             """
-    )fun findUserById(id: Int): User?
+    ) fun findUserById(id: Int): User?
 
 
     @Select(
@@ -48,16 +48,16 @@ interface UserDao {
                 FROM users
                 WHERE id=#{id}
             """
-    )fun getnameById(id: Int): String
+    ) fun getNameById(id: Int): String
 
-    //idからpasswordを割り出す
+    // id から password を割り出す
     @Select(
             """
                 SELECT password
                 FROM users
                 WHERE id=#{userId}
             """
-    )fun idToPassword(userId:Int): String
+    ) fun idToPassword(userId:Int): String
 
     @Update(
             """
@@ -65,5 +65,5 @@ interface UserDao {
                 SET screen_name=#{newScreenName}
                 WHERE id=#{userId}
             """
-    )fun updateScreenName(userId: Int, newScreenName: String): Unit
+    ) fun updateScreenName(userId: Int, newScreenName: String): Unit
 }
