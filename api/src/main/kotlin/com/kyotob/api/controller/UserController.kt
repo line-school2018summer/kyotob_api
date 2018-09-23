@@ -18,6 +18,8 @@ data class UpdateUserRequest (
         val newIconPath: String
 )
 
+data class GetUserRequest (@JsonProperty("name") val name: String)
+
 @RestController
 class UserController(private val userService: UserService){
     // User の登録
@@ -44,6 +46,15 @@ class UserController(private val userService: UserService){
     fun searchUser(@PathVariable("user_name") userName: String,
                    @RequestHeader("access_token") token:String): UserSearch =
             userService.searchUser(userName, token)
+
+    @GetMapping(
+            value = ["user/{user_name}"],
+            produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
+    )
+    fun getUser(@PathVariable("user_name") userName: String,
+                @RequestHeader("access_token") token: String,
+                @RequestBody request: GetUserRequest) =
+            userService.getUser(request.name)
 
     @PutMapping( value = ["user/{user_name}"], produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)] )
     fun putUser(@PathVariable("user_name") userName: String,
