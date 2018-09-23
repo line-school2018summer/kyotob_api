@@ -1,10 +1,7 @@
 package com.kyotob.api.controller
 
 import com.fasterxml.jackson.annotation.JsonProperty
-import com.kyotob.api.model.UserRegister  // User 登録用モデル
-import com.kyotob.api.model.UserLogin  // User 認証用モデル
-import com.kyotob.api.model.UserResponse  // User レスポンス用モデル
-import com.kyotob.api.model.UserSearch  // User 検索用モデル
+import com.kyotob.api.model.*
 
 import com.kyotob.api.service.UserService  // User 関連サービス
 import org.springframework.http.HttpStatus
@@ -14,7 +11,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 
-data class UpdateUserRequest  (
+data class UpdateUserRequest (
         @JsonProperty("new_screen_name")
         val newName: String,
         @JsonProperty("new_icon_path")

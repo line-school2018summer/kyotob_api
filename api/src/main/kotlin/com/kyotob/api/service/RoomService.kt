@@ -1,7 +1,7 @@
 package com.kyotob.api.service
 
 import org.springframework.stereotype.Service
-import com.kyotob.api.model.simpleRoom
+import com.kyotob.api.model.SimpleRoom
 import com.kyotob.api.model.Pair
 import com.kyotob.api.controller.BadRequestException
 import com.kyotob.api.controller.InternalServerError
@@ -17,14 +17,14 @@ import kotlin.math.min
 class RoomService(private val roomMapper: RoomMapper, private val pairMapper: PairMapper, private val groupMapper: GroupMapper) {
 
     //テスト用
-    fun getAllRoomList(): ArrayList<simpleRoom> {
+    fun getAllRoomList(): ArrayList<SimpleRoom> {
         return roomMapper.getAllRooms()
     }
 
-    fun getRoomFromRoomId(roomId: Int): simpleRoom {
-        val simpleRoom: simpleRoom? = roomMapper.findByRoomId(roomId)
-        simpleRoom ?: throw BadRequestException("no room found")
-        return simpleRoom
+    fun getRoomFromRoomId(roomId: Int): SimpleRoom {
+        val SimpleRoom: SimpleRoom? = roomMapper.findByRoomId(roomId)
+        SimpleRoom ?: throw BadRequestException("no room found")
+        return SimpleRoom
     }
 
     fun getPairFromRoomId(roomId: Int): Pair? {
@@ -39,7 +39,7 @@ class RoomService(private val roomMapper: RoomMapper, private val pairMapper: Pa
         return pairMapper.findByTwoUserId(userId1, userId2)
     }
 
-    fun getRoomListFromUserId(userId: Int): List<simpleRoom> {
+    fun getRoomListFromUserId(userId: Int): List<SimpleRoom> {
         val pairs = pairMapper.findByUserId(userId)
         val groupRoomIds = groupMapper.findByUserId(userId)
         //pairsテーブルとroomsテーブルは整合性がなければならない

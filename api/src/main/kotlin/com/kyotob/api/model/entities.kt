@@ -67,7 +67,7 @@ data class UserSearch (
         @JsonProperty("image_url") val imageUrl: String
 )
 
-data class simpleRoom (
+data class SimpleRoom (
         val id: Int,
         val name: String
 )
