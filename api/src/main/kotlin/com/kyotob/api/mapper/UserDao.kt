@@ -70,7 +70,7 @@ interface UserDao {
     @Update(
             """
                 UPDATE users
-                SET screen_name=#{newIconPath}
+                SET user_image=#{newIconPath}
                 WHERE id=#{userId}
             """
     ) fun updateIconPath(userId: Int, newIconPath: String)
