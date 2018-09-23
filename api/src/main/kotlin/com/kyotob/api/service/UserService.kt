@@ -22,9 +22,8 @@ class UserService(private val userDao: UserDao,
 
     fun createUser(request: UserRegister): UserResponse {
         // User が既に登録されていれば例外を投げる
-        if (userDao.isNameRegistered(request.name)) {
-            throw Conflict("User name already exists")
-        }
+        if (userDao.isNameRegistered(request.name)) throw Conflict("User name already exists")
+
         // User が未登録ならば新しく登録
         // password のハッシュ化
         val hashedPassword = BCryptPasswordEncoder().encode(request.password)
@@ -38,9 +37,8 @@ class UserService(private val userDao: UserDao,
         return UserResponse(request.screenName, token, request.imageUrl)
     }
 
-    fun getUserFromId(id: Int): User {
-        return userDao.findUserById(id) ?: throw InternalServerError("getUserFromId")
-    }
+    fun getUserFromId(id: Int) =
+            userDao.findUserById(id) ?: throw InternalServerError("getUserFromId")
 
     fun login(request: UserLogin): UserResponse {
         if (!userDao.isNameRegistered(request.name)) {
