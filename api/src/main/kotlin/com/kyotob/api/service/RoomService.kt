@@ -65,17 +65,17 @@ class RoomService(private val roomMapper: RoomMapper, private val pairMapper: Pa
     fun createPairRoom(userId1: Int, userId2: Int, roomName: String): Int {
         val minUserId = min(userId1, userId2)
         val maxUserId = max(userId1, userId2)
-        val simpleRoom: simpleRoom = simpleRoom(id = -1, name = roomName)
-        roomMapper.create(simpleRoom)
-        val roomId = simpleRoom.id
+        val room = Room(id = -1, name = roomName)
+        roomMapper.create(room)
+        val roomId = room.id
         pairMapper.create(roomId, minUserId, maxUserId)
         return roomId
     }
 
-    fun createGroupRoom(roomName: String, userIdList: List<Int>) : Int {
-        val simpleRoom: simpleRoom = simpleRoom(id = -1, name = roomName)
-        roomMapper.create(simpleRoom)
-        val roomId = simpleRoom.id
+    fun createGroupRoom(roomName: String, userIdList: List<Int>, iconPath: String) : Int {
+        val room = Room(id = -1, name = roomName, imageUrl = iconPath)
+        roomMapper.create(room)
+        val roomId = room.id
         userIdList.distinct().map {groupMapper.insertUsersRooms(it, roomId)}
         return roomId
     }

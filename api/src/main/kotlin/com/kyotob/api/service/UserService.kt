@@ -35,7 +35,7 @@ class UserService(private val userDao: UserDao,
         // token を取得し tokens に (id, token) の組を格納
         val token:String = createNewToken(userDao.getUser(request.name).id)
 
-        return UserResponse(request.screenName, token)
+        return UserResponse(request.screenName, token, request.imageUrl)
     }
 
     fun getUserFromId(id: Int): User {
@@ -59,7 +59,7 @@ class UserService(private val userDao: UserDao,
                 // password が合っている場合は新規に発行した token を返す
                 val token:String = createNewToken(userDao.getUser(request.name).id)
                 val user = userDao.getUser(request.name)
-                return UserResponse(user.screenName, token)
+                return UserResponse(user.screenName, token, user.imageUrl)
             }
         }
     }
@@ -98,10 +98,11 @@ class UserService(private val userDao: UserDao,
         return friendList.map { hashMapOf("friend_screen_name" to it.screenName, "friend_name" to it.name) }
     }
 
-    fun updateScreenName(accessToken: String, name: String, newScreenName: String) {
+    fun updateUser(accessToken: String, name: String, newScreenName: String, newIconPath: String) {
         // token 確認
         searchUser(name, accessToken)
         val user = userDao.getUser(name)
         userDao.updateScreenName(user.id, newScreenName)
+        userDao.updateIconPath(user.id, newIconPath)
     }
 }

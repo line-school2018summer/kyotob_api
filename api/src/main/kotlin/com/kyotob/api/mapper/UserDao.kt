@@ -65,5 +65,13 @@ interface UserDao {
                 SET screen_name=#{newScreenName}
                 WHERE id=#{userId}
             """
-    ) fun updateScreenName(userId: Int, newScreenName: String): Unit
+    ) fun updateScreenName(userId: Int, newScreenName: String)
+
+    @Update(
+            """
+                UPDATE users
+                SET screen_name=#{newIconPath}
+                WHERE id=#{userId}
+            """
+    ) fun updateIconPath(userId: Int, newIconPath: String)
 }

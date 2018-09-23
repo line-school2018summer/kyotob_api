@@ -14,9 +14,12 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 
-data class PutNewNameRequest  (
+data class UpdateUserRequest  (
         @JsonProperty("new_screen_name")
-        val newName: String)
+        val newName: String,
+        @JsonProperty("new_icon_path")
+        val newIconPath: String
+)
 
 @RestController
 class UserController(private val userService: UserService){
@@ -48,8 +51,8 @@ class UserController(private val userService: UserService){
     @PutMapping( value = ["user/{user_name}"], produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)] )
     fun putUser(@PathVariable("user_name") userName: String,
                 @RequestHeader("access_token") token: String,
-                @RequestBody request: PutNewNameRequest): ResponseEntity<String> {
-        userService.updateScreenName(token, userName, request.newName)
+                @RequestBody request: UpdateUserRequest): ResponseEntity<String> {
+        userService.updateUser(token, userName, request.newName, request.newIconPath)
         val status = HttpStatus.NO_CONTENT
         return ResponseEntity(status)
     }
