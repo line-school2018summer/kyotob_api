@@ -91,7 +91,7 @@ class RoomController(private val userService: UserService, val roomService: Room
             value = ["/room/pair"]
     )
     fun getPairRoom(@RequestHeader("access_token") token: String,
-                     @RequestBody request: UserNameRequest): simpleRoom {
+                     @RequestBody request: UserNameRequest): SimpleRoom {
         val userId = tokenService.verifyAccessToken(token)
         //friendNameから友達のIDを取得
         val friendId = userService.getUser(request.userName).id
@@ -106,7 +106,7 @@ class RoomController(private val userService: UserService, val roomService: Room
         if (pair == null) {
             val roomId = roomService.createPairRoom(minId, maxId, roomName)
             sendNotification(roomId, request.userName) // 友たちにルームが出来たことを通知
-            sendNotification(roomId, userDao.getnameById(userId)) // 自分自身にも通知
+            sendNotification(roomId, userDao.getNameById(userId)) // 自分自身にも通知
             return roomService.getRoomFromRoomId(roomId)
         }
         return roomService.getRoomFromRoomId(pair.roomId)
@@ -116,7 +116,7 @@ class RoomController(private val userService: UserService, val roomService: Room
             value = ["/room"]
     )
     fun createGroupRoom(@RequestHeader("access_token") token: String,
-                    @RequestBody request: PostGroupRequest): simpleRoom{
+                    @RequestBody request: PostGroupRequest): SimpleRoom {
         tokenService.verifyAccessToken(token)
         val userIdList: List<Int> = request.userNameList.map {userService.getUser(it.userName).id}
         val id = roomService.createGroupRoom(request.roomName, userIdList, request.iconPath)

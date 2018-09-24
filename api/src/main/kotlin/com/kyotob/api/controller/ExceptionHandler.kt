@@ -16,7 +16,7 @@ class Conflict(override val message: String) : Exception(message)
 class NotFound(override val message: String) : Exception(message)
 
 @ControllerAdvice
-class apiExceptionHandler {
+class ApiExceptionHandler {
 
     @ExceptionHandler(BadRequestException::class)
     fun badRequest(req: HttpServletRequest, e: BadRequestException): ResponseEntity<ErrorResponse> {

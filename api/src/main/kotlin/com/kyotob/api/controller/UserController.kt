@@ -1,12 +1,9 @@
 package com.kyotob.api.controller
 
 import com.fasterxml.jackson.annotation.JsonProperty
-import com.kyotob.api.model.UserRegister //User登録用のモデル
-import com.kyotob.api.model.UserLogin //User認証用のモデル
-import com.kyotob.api.model.UserResponse //Userレスポンス用のモデル
-import com.kyotob.api.model.UserSearch //User検索ようのモデル
+import com.kyotob.api.model.*
 
-import com.kyotob.api.service.UserService // User関連のサービス
+import com.kyotob.api.service.UserService  // User 関連サービス
 import org.springframework.http.HttpStatus
 
 import org.springframework.http.MediaType
@@ -14,44 +11,55 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 
-data class UpdateUserRequest  (
+data class UpdateUserRequest (
         @JsonProperty("new_screen_name")
         val newName: String,
         @JsonProperty("new_icon_path")
         val newIconPath: String
 )
 
+data class GetUserRequest (@JsonProperty("name") val name: String)
+
 @RestController
 class UserController(private val userService: UserService){
-    //Userの登録
+    // User の登録
     @PostMapping(
             value = ["/user"],
             produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
     )
-    fun createuser(@RequestBody request: UserRegister): UserResponse {
-        return userService.createUser(request)
-    }
+    fun createUser(@RequestBody request: UserRegister): UserResponse =
+            userService.createUser(request)
 
-    //Userのログイン
+    // User のログイン
     @PostMapping(
             value = ["user/login"],
             produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
     )
-    fun loginuser(@RequestBody request: UserLogin): UserResponse{
-        return userService.login(request)
-    }
+    fun loginUser(@RequestBody request: UserLogin): UserResponse =
+            userService.login(request)
 
-    //User検索
+    // User 検索
     @GetMapping(
             value = ["user/search/{user_name}"],
             produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
     )
-    fun searchuser(@PathVariable("user_name") userName: String, @RequestHeader("access_token") token:String): UserSearch{
-        return userService.searchUser(userName, token)
-    }
+    fun searchUser(@PathVariable("user_name") userName: String,
+                   @RequestHeader("access_token") token:String): UserSearch =
+            userService.searchUser(userName, token)
+
+    @GetMapping(
+            value = ["user/{user_name}"],
+            produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
+    )
+    fun getUser(@PathVariable("user_name") userName: String,
+                @RequestHeader("access_token") token: String,
+                @RequestBody request: GetUserRequest) =
+            userService.getUser(request.name)
 
     @PutMapping( value = ["user/{user_name}"], produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)] )
-    fun putUser(@PathVariable("user_name") userName: String, @RequestHeader("access_token") token: String, @RequestBody request: UpdateUserRequest): ResponseEntity<String> {
+    fun putUser(@PathVariable("user_name") userName: String,
+                @RequestHeader("access_token") token: String,
+                @RequestBody request: UpdateUserRequest): ResponseEntity<String> {
         userService.updateUser(token, userName, request.newName, request.newIconPath)
         val status = HttpStatus.NO_CONTENT
         return ResponseEntity(status)
@@ -61,8 +69,7 @@ class UserController(private val userService: UserService){
             value = ["user/{user_name}/friends"],
             produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
     )
-    fun getFriends(@PathVariable("user_name") userName: String, @RequestHeader("access_token") token: String):
-            List<HashMap<String, String>> {
-        return userService.getFriend(userName)
-    }
+    fun getFriends(@PathVariable("user_name") userName: String,
+                   @RequestHeader("access_token") token: String): List<HashMap<String, String>> =
+            userService.getFriend(userName)
 }

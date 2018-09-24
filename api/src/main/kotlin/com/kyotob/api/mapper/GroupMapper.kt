@@ -1,9 +1,5 @@
 package com.kyotob.api.mapper
 
-import com.kyotob.api.model.GetMessageResponse // メッセージ受信用のモデル
-import com.kyotob.api.model.Room
-import com.kyotob.api.model.Rooms
-import com.kyotob.api.model.UsersRooms
 import org.apache.ibatis.annotations.Insert
 import org.apache.ibatis.annotations.Mapper
 import org.apache.ibatis.annotations.Select
@@ -11,7 +7,7 @@ import org.springframework.stereotype.Component
 
 @Component
 @Mapper
-interface groupMapper {
+interface GroupMapper {
 
     @Select(
             """

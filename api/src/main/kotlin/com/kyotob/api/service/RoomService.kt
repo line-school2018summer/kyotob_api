@@ -1,30 +1,30 @@
 package com.kyotob.api.service
 
 import org.springframework.stereotype.Service
-import com.kyotob.api.model.simpleRoom
+import com.kyotob.api.model.SimpleRoom
 import com.kyotob.api.model.Pair
 import com.kyotob.api.controller.BadRequestException
 import com.kyotob.api.controller.InternalServerError
 import com.kyotob.api.mapper.RoomMapper
 import com.kyotob.api.mapper.PairMapper
-import com.kyotob.api.mapper.groupMapper
+import com.kyotob.api.mapper.GroupMapper
 import com.kyotob.api.model.Room
 import com.kyotob.api.model.Rooms
 import kotlin.math.max
 import kotlin.math.min
 
 @Service
-class RoomService(private val roomMapper: RoomMapper, private val pairMapper: PairMapper, private val groupMapper: groupMapper) {
+class RoomService(private val roomMapper: RoomMapper, private val pairMapper: PairMapper, private val groupMapper: GroupMapper) {
 
     //テスト用
-    fun getAllRoomList(): ArrayList<simpleRoom> {
+    fun getAllRoomList(): ArrayList<SimpleRoom> {
         return roomMapper.getAllRooms()
     }
 
-    fun getRoomFromRoomId(roomId: Int): simpleRoom {
-        val simpleRoom: simpleRoom? = roomMapper.findByRoomId(roomId)
-        simpleRoom ?: throw BadRequestException("no room found")
-        return simpleRoom
+    fun getRoomFromRoomId(roomId: Int): SimpleRoom {
+        val SimpleRoom: SimpleRoom? = roomMapper.findByRoomId(roomId)
+        SimpleRoom ?: throw BadRequestException("no room found")
+        return SimpleRoom
     }
 
     fun getPairFromRoomId(roomId: Int): Pair? {
@@ -39,18 +39,18 @@ class RoomService(private val roomMapper: RoomMapper, private val pairMapper: Pa
         return pairMapper.findByTwoUserId(userId1, userId2)
     }
 
-    fun getRoomListFromUserId(userId: Int): List<simpleRoom> {
+    fun getRoomListFromUserId(userId: Int): List<SimpleRoom> {
         val pairs = pairMapper.findByUserId(userId)
         val groupRoomIds = groupMapper.findByUserId(userId)
         //pairsテーブルとroomsテーブルは整合性がなければならない
         //nullがあれば例外を投げる
-        val RoomList = pairs.map {
+        val roomList = pairs.map {
             roomMapper.findByRoomId(it.roomId) ?: throw InternalServerError("pairsとroomsとに整合性がない")
         } +
         groupRoomIds.map {
                     roomMapper.findByRoomId(it) ?: throw InternalServerError("groupsとroomsに整合性がない")
         }
-        return RoomList
+        return roomList
     }
 
     fun getPairRoomsListFromUserId(userId: Int): ArrayList<Rooms> {
@@ -84,12 +84,12 @@ class RoomService(private val roomMapper: RoomMapper, private val pairMapper: Pa
         userIdList.distinct().map {groupMapper.insertUsersRooms(it, roomId)}
     }
 
-    fun deleteRoom(roomId: Int): Unit {
+    fun deleteRoom(roomId: Int) {
         pairMapper.delete(roomId)
         roomMapper.delete(roomId)
     }
 
-    fun updateName(roomId: Int, newName: String): Unit {
+    fun updateName(roomId: Int, newName: String) {
         roomMapper.updateName(roomId, newName)
     }
 }

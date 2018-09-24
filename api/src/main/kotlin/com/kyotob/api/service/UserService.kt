@@ -16,48 +16,45 @@ import java.util.*
 import kotlin.collections.HashMap
 
 @Service
-class UserService(private val userDao: UserDao, private val tokenDao: TokenDao, private val pairMapper: PairMapper){
-    //User登録をするメソッド
-    fun createUser(request: UserRegister): UserResponse{
-        //Userが既に登録されていればErrorを返す。
-        if(userDao.isNameRegistered(request.name)) {
-            throw Conflict("User name already exists")
-        }
-        //Userが未登録ならば新しく登録
-        //passwordのハッシュ化
+class UserService(private val userDao: UserDao,
+                  private val tokenDao: TokenDao,
+                  private val pairMapper: PairMapper) {
+
+    fun createUser(request: UserRegister): UserResponse {
+        // User が既に登録されていれば例外を投げる
+        if (userDao.isNameRegistered(request.name)) throw Conflict("User name already exists")
+
+        // User が未登録ならば新しく登録
+        // password のハッシュ化
         val hashedPassword = BCryptPasswordEncoder().encode(request.password)
 
-        //usersに追加
+        // users に追加
         userDao.insertUser(request.name, request.screenName, hashedPassword, request.imageUrl)
 
-        //tokenを取得しtokensに(id, token)の組を格納
+        // token を取得し tokens に (id, token) の組を格納
         val token:String = createNewToken(userDao.getUser(request.name).id)
 
         return UserResponse(request.screenName, token, request.imageUrl)
     }
 
-    fun getUserFromId(id: Int): User {
-        return userDao.findUserById(id) ?: throw InternalServerError("getUserFromId")
-    }
+    fun getUserFromId(id: Int) =
+            userDao.findUserById(id) ?: throw InternalServerError("getUserFromId")
 
-    //Userログインをするメソッド
-    fun login(request: UserLogin): UserResponse{
+    fun login(request: UserLogin): UserResponse {
         if (!userDao.isNameRegistered(request.name)) {
-            //Userが登録されていない場合
+            // User が登録されていない場合
             throw UnauthorizedException("User name or Password is wrong")
-        }
-        else{
-            //Userが登録されている場合、passwordの正誤を確認
+        } else {
+            // User が登録されている場合、password の正誤を確認
             val givenPassword: String = request.password
             val storedPassword: String = userDao.getUser(request.name).password
 
-            //passwordのハッシュ値が一致するか確認
-            if(!BCryptPasswordEncoder().matches(givenPassword, storedPassword)){
-                //Passwordが間違っている場合
+            // password のハッシュ値が一致するか確認
+            if (!BCryptPasswordEncoder().matches(givenPassword, storedPassword)) {
+                // Password が間違っている場合
                 throw UnauthorizedException("User Name or Password is wrong")
-            }
-            else{
-                //passwordがが合っている場合は新規発行のtokenを返す
+            } else {
+                // password が合っている場合は新規に発行した token を返す
                 val token:String = createNewToken(userDao.getUser(request.name).id)
                 val user = userDao.getUser(request.name)
                 return UserResponse(user.screenName, token, user.imageUrl)
@@ -65,32 +62,27 @@ class UserService(private val userDao: UserDao, private val tokenDao: TokenDao, 
         }
     }
 
-    //User検索をするメソッド
-    fun searchUser(userName: String, token:String): UserSearch{
-        //tokenが間違っていればエラーを投げる
-        if(tokenDao.findByToken(token) == null) throw UnauthorizedException("Invalid access token")
-        //tokenが合っていればuserを検索する
-        else{
-            //Userがいなければエラーを投げる
-            if(!userDao.isNameRegistered(userName)) throw NotFound("User Not Found")
-            //Userがいれば情報を取得する
-            else{
-                val userInfo: User = userDao.getUser(userName)
-                return UserSearch(userInfo.name, userInfo.screenName, userInfo.imageUrl)
-            }
+    fun searchUser(userName: String, token:String): UserSearch {
+        if (tokenDao.findByToken(token) == null) {
+            // token が間違っていればエラー
+            throw UnauthorizedException("Invalid access token")
+        } else if (!userDao.isNameRegistered(userName)) {
+            // User がいなければエラー
+            throw NotFound("User Not Found")
+        } else {  // User がいれば情報を取得
+            val userInfo: User = userDao.getUser(userName)
+            return UserSearch(userInfo.name, userInfo.screenName, userInfo.imageUrl)
         }
     }
 
-    //tokenを新規発行or更新するメソッド
-    fun createNewToken(userId: Int):String{
-        val token: String = UUID.randomUUID().toString()  //新たにtokenを得る
-        tokenDao.upsert(userId, token)  //tokensに格納
+    // token を新規発行 or 更新する
+    fun createNewToken(userId: Int): String {
+        val token: String = UUID.randomUUID().toString()  // 新たに token を得る
+        tokenDao.upsert(userId, token)  // tokens に格納
         return token
     }
 
-    fun getUser(userName: String): User {
-        return userDao.getUser(userName)
-    }
+    fun getUser(userName: String) = userDao.getUser(userName)
 
     fun getFriend(userName: String): List<HashMap<String, String>> {
         fun getFriendId(myId: Int, pair: Pair): Int {
@@ -105,7 +97,7 @@ class UserService(private val userDao: UserDao, private val tokenDao: TokenDao, 
     }
 
     fun updateUser(accessToken: String, name: String, newScreenName: String, newIconPath: String) {
-        //token確認
+        // token 確認
         searchUser(name, accessToken)
         val user = userDao.getUser(name)
         userDao.updateScreenName(user.id, newScreenName)

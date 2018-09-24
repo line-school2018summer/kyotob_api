@@ -5,35 +5,27 @@ import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
 import java.io.IOException
 import java.nio.file.StandardOpenOption
-import java.time.LocalDateTime
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import java.io.File
-import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
-import javax.xml.bind.DatatypeConverter
 import java.security.MessageDigest
-import kotlin.text.Charsets.UTF_8
-
 
 @RestController
-class ImageController() {
-//    val BASEPATH = "/tmp/"
+class ImageController {
+    // val BASEPATH = "/tmp/"
+    val BASE_PATH = "/home/ec2-user/images/"
 
-    val BASEPATH = "/home/ec2-user/images/"
-
-    data class FileUploadResponse(
-            val path: String
-    )
+    data class FileUploadResponse(val path: String)
 
     // 画像のアップロード
     // Imageを取得し、urlを返す
     @PostMapping(value = ["/image/upload"])
-    fun upfile(@RequestParam("file") file: MultipartFile): FileUploadResponse  {
+    fun uploadFile(@RequestParam("file") file: MultipartFile): FileUploadResponse  {
 
 
         // 空のファイルが投げられたとき
@@ -45,12 +37,12 @@ class ImageController() {
         val  date = Date(System.currentTimeMillis()) // 現在時刻を取得
 
         // スラッシュとかをなくすためにハッシュ化
-        var fileName = hashString(BASEPATH + df.format(date) + "_" + file.originalFilename)
+        var fileName = hashString(BASE_PATH + df.format(date) + "_" + file.originalFilename)
         // タイムスタンプと拡張子を付与
         fileName = df.format(date) + "_" + fileName + "." + File(file.originalFilename).extension
 
         // 保存先のパスを定義
-        val savePath = Paths.get(BASEPATH + fileName)
+        val savePath = Paths.get(BASE_PATH + fileName)
 
         // ファイルの保存
         try {
@@ -67,7 +59,7 @@ class ImageController() {
     // 画像のダウンロード
     @GetMapping(value = ["/image/download/{id}"])
     fun getFile(@PathVariable("id") id: String): HttpEntity<ByteArray> {
-        val path: Path = Paths.get(BASEPATH, id)
+        val path: Path = Paths.get(BASE_PATH, id)
         lateinit var byteArray: ByteArray
         // ファイルを取得し、byteArrayに保存
         try {
@@ -86,11 +78,11 @@ class ImageController() {
             headers.contentType = MediaType.IMAGE_JPEG
         }
         headers.contentLength = byteArray.size.toLong()
-        return HttpEntity<ByteArray>(byteArray, headers)
+        return HttpEntity(byteArray, headers)
     }
 }
 
-// ハッシュ化の関数
+// ハッシュ化
 private fun hashString(input: String): String {
     val HEX_CHARS = "0123456789ABCDEF"
     val bytes = MessageDigest
