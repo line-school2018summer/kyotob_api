@@ -2,22 +2,24 @@ package com.kyotob.api.controller
 import com.kyotob.api.model.*
 import com.kyotob.api.service.MessageService // Message関連のサービス
 import com.kyotob.api.service.TimerMessageService
+import com.kyotob.api.service.TokenService
+import com.kyotob.api.service.UserService
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
 @RestController
-class TimerMessageController(private val messageService: MessageService, private val timerMessageService: TimerMessageService) {
+class TimerMessageController(private val messageService: MessageService, private val timerMessageService: TimerMessageService, private val tokenService: TokenService) {
     // Messageの取得
     @GetMapping(
             value = ["/room/{room_id}/messages/timer"],
             produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
     )
     fun getMessage(@PathVariable("room_id") roomId: Int, @RequestHeader("access_token") token: String): List<GetTimerMessageResponse>? {
-        val userId: Int = messageService.auth(roomId, token)
+        val userId: Int = tokenService.verifyAccessToken(token)
         // Tokenの持ち主がPair(ルーム)に存在するか確認する
-        if (userId == -1) {
-            // ルーム存在しない場合はErrorを投げる
-            throw UnauthorizedException("TokenError")
-        }
+//        if (userId == -1) {
+//            // ルーム存在しない場合はErrorを投げる
+//            throw UnauthorizedException("TokenError")
+//        }
         // Tokenの認証ができたので、メッセージを取得してResponseとして返す
         return timerMessageService.getMessageList(roomId, userId)
     }
@@ -35,12 +37,12 @@ class TimerMessageController(private val messageService: MessageService, private
         // 画像がない場合
         if(request.imageUrl.isEmpty()) throw BadRequestException("no content")
 
-        val userIdByToken = messageService.auth(roomId, token)
+        val userIdByToken = tokenService.verifyAccessToken(token)
         // Tokenの持ち主がPair(ルーム)に存在するか確認する
-        if (userIdByToken == -1) {
-            // ルーム存在しない場合はErrorを投げる
-            throw UnauthorizedException("TokenError")
-        }
+//        if (userIdByToken == -1) {
+//            // ルーム存在しない場合はErrorを投げる
+//            throw UnauthorizedException("TokenError")
+//        }
         // メッセージ送信
         return timerMessageService.sendMessage(request, roomId, userIdByToken)
     }

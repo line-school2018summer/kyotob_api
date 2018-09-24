@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service
 
 class TimerMessageService(private val tmdao: TimerMessageDAO, private val roomMapper: RoomMapper) {
     // メッセージ取得時に呼ぶメソッド
-    fun getMessageList(roomId: Int, recieverId: Int): List<GetTimerMessageResponse>? {
+    fun getMessageList(roomId: Int, recieverId: Int): List<GetTimerMessageResponse> {
 
         // メッセージを取得
         val messages = tmdao.findMessages(roomId, recieverId)

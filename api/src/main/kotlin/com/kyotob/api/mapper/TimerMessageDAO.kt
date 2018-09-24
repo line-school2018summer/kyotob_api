@@ -4,7 +4,9 @@ import org.apache.ibatis.annotations.Insert
 import org.apache.ibatis.annotations.Mapper
 import org.apache.ibatis.annotations.Select
 import org.apache.ibatis.annotations.Update
+import org.springframework.stereotype.Component
 
+@Component
 @Mapper
 interface TimerMessageDAO {
     // Message取得用のSQL文
@@ -20,7 +22,7 @@ interface TimerMessageDAO {
                     timer_messages.sender_id != #{recieverId}
             """
     )
-    fun findMessages(roomId: Int, recieverId: Int): List<GetTimerMessageResponse>?
+    fun findMessages(roomId: Int, recieverId: Int): List<GetTimerMessageResponse>
 
     // 既読をつける
     @Update(
